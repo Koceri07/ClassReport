@@ -1,32 +1,32 @@
 package com.classreport.classreport.entity;
 
-import com.classreport.classreport.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Entity
-@Table(name = "users")
+@Table(name = "lesson_instances")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Inheritance(strategy = InheritanceType.JOINED)
-public class UserEntity {
+public class LessonInstanceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private String surname;
-    private String password;
-    @Enumerated(value = EnumType.STRING)
-    private Role role;
+    private LocalDate date;
 
-    private boolean isActive;
+    @ManyToOne
+    private LessonScheduleEntity lessonSchedule;
+
+
+    @OneToMany(mappedBy = "lessonInstance")
+    private List<AttendanceEntity> attendances;
 
 }
-
-

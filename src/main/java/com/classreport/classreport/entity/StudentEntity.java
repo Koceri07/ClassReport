@@ -14,7 +14,12 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@PrimaryKeyJoinColumn(name = "id")
 public class StudentEntity extends UserEntity{
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "attendance_id")
+    public List<AttendanceEntity> attendanceEntity;
 
     @ManyToMany
     @JoinTable(name = "student_group",

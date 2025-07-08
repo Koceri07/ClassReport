@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,13 +29,13 @@ public class AttendanceEntity {
     @JoinColumn(name = "student_id")
     private StudentEntity student;
 
-    @ManyToOne
-    @JoinColumn(name = "lesson_schedule_id")
-    private LessonScheduleEntity lessonSchedule;
+//    @ManyToOne
+//    @JoinColumn(name = "lesson_schedule_id")
+//    private LessonScheduleEntity lessonSchedule;
 
-    @ManyToOne
-    @JoinColumn(name = "teacher_id")
-    private TeacherEntity teacher;
+//    @ManyToOne
+//    @JoinColumn(name = "teacher_id")
+//    private TeacherEntity teacher;
 
     @ManyToOne
     @JoinColumn(name = "lesson_instance_id")

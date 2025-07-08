@@ -3,6 +3,7 @@ package com.classreport.classreport.model.response;
 import com.classreport.classreport.entity.LessonInstanceEntity;
 import com.classreport.classreport.entity.StudentEntity;
 import com.classreport.classreport.entity.TeacherEntity;
+import com.classreport.classreport.model.request.LessonScheduleRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,8 +22,8 @@ public class LessonInstanceResponse {
     private String lateTime;
     private String note;
 
-    private StudentEntity student;
-    private TeacherEntity teacher;
-    private LessonInstanceEntity lessonInstance;
+    private StudentResponse student;
+    private TeacherResponse teacher;
+    private LessonScheduleRequest lessonInstance;
 
 }

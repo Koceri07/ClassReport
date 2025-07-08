@@ -19,6 +19,6 @@ public class GroupRequest {
     private String groupName;
     private boolean isActive;
     private List<StudentEntity> students;
-    private List<LessonScheduleEntity> lessonSchedules;
+//    private List<LessonScheduleEntity> lessonSchedules;
 
 }

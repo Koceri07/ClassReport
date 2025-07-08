@@ -23,7 +23,7 @@ public class StudentController {
         return studentService.getStudentById(id);
     }
 
-    @GetMapping
+    @GetMapping("/get-all")
     public ApiResponse getAll(){
         return studentService.getAllStudents();
     }

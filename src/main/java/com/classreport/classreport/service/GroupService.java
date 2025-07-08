@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GroupService {
 
-    private GroupRepository groupRepository;
+    private final GroupRepository groupRepository;
 
     public void createGroup(GroupRequest groupRequest){
         log.info("Action.createGroup.start for id {}", groupRequest.getId());

@@ -26,6 +26,6 @@ public class GroupEntity {
     @ManyToMany(mappedBy = "groups")
     private List<StudentEntity> students;
 
-    @OneToMany(mappedBy = "group")
-    private List<LessonScheduleEntity> lessonSchedules;
+//    @OneToMany(mappedBy = "group")
+//    private List<LessonScheduleEntity> lessonSchedules;
 }

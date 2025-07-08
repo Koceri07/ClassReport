@@ -13,6 +13,7 @@ public class UserResponse {
     private Long id;
 
     private String name;
+    private String surname;
     private String password;
     private Role role;
     private boolean isActive;

@@ -8,5 +8,6 @@ public class AttendanceUpdateRequest {
     private String date;
     private Boolean present;
     private String lateTime;
+    private String note;
 }
 

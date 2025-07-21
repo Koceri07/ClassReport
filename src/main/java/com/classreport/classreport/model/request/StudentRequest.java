@@ -16,7 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 public class StudentRequest extends UserRequest{
 
-    private List<GroupEntity> groups;
+
+    private Long groupId;
 
 }
 

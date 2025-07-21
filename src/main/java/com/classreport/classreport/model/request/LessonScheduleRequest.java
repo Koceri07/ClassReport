@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -21,8 +22,10 @@ public class LessonScheduleRequest {
     private Set<DayOfWeek> daysOfWeek;
     private LocalTime startTime;
     private LocalTime endTime;
-    private GroupEntity group;
-    private TeacherEntity teacher;
-    private Set<LocalDate> exceptionDates;
+    private List<LessonInstanceRequest> lessons;
+//    private GroupRequest group;
+//    private TeacherRequest teacher;
+    private Long teacherId;
+//    private Set<LocalDate> exceptionDates;
 
 }

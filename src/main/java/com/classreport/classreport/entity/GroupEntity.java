@@ -1,5 +1,7 @@
 package com.classreport.classreport.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "groups")
@@ -24,8 +27,15 @@ public class GroupEntity {
     private boolean isActive;
 
     @ManyToMany(mappedBy = "groups")
-    private List<StudentEntity> students;
+    private Set<StudentEntity> students;
 
-//    @OneToMany(mappedBy = "group")
-//    private List<LessonScheduleEntity> lessonSchedules;
+    @ManyToOne
+    private TeacherEntity teacher;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "lesson_schedule_id")
+    private LessonScheduleEntity lessonSchedule;
+
+
+
 }

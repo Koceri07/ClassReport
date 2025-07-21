@@ -1,11 +1,13 @@
 package com.classreport.classreport.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,6 +27,6 @@ public class StudentEntity extends UserEntity{
     @JoinTable(name = "student_group",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id"))
-    private List<GroupEntity> groups;
+    private List<GroupEntity> groups = new ArrayList<>();
 
 }

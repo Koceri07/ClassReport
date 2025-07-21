@@ -21,7 +21,7 @@ public class AttendanceRequest {
     private String lateTime;
     private String note;
 
-    private StudentEntity student;
-    private TeacherEntity teacher;
-    private LessonInstanceEntity lessonInstance;
+    private StudentRequest student;
+    private TeacherRequest teacher;
+    private LessonInstanceRequest lessonInstance;
 }

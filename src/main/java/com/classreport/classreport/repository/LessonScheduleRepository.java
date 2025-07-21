@@ -17,4 +17,7 @@ public interface LessonScheduleRepository extends JpaRepository<LessonScheduleEn
     @Modifying
     @Query(value = " UPDATE lesson_schedules u SET u.is_active = false WHERE u.id =:id;", nativeQuery = true)
     void softDelete(@Param("id") Long id);
+
+
+    LessonScheduleEntity findByGroupId(Long groupId);
 }

@@ -46,7 +46,7 @@ public class AttendanceService {
     public ApiResponse getAllAttendance(){
         log.info("Action.getAllAttendance.start");
         var attendances = attendanceRepository.findAll().stream()
-                        .map(AttendanceMapper.INSTANCE::entityToRequest)
+                        .map(AttendanceMapper.INSTANCE::entityToResponse)
                                 .toList();
         ApiResponse apiResponse = new ApiResponse(attendances);
         log.info("Action.getAllAttendance.end");
@@ -88,6 +88,7 @@ public class AttendanceService {
         attendance.setIsAbsent(!request.getPresent());
         attendance.setDate(lessonInstance.getDate().atStartOfDay());
         attendance.setLateTime(request.getLateTime());
+        attendance.setNote(request.getNote());
 
 //        lessonInstance.getDate().atStartOfDay()
         attendanceRepository.save(attendance);

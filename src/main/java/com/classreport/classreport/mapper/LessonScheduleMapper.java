@@ -6,7 +6,7 @@ import com.classreport.classreport.model.response.LessonScheduleResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper()
 public interface LessonScheduleMapper {
 
     LessonScheduleMapper INSTANCE = Mappers.getMapper(LessonScheduleMapper.class);

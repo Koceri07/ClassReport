@@ -1,5 +1,6 @@
 package com.classreport.classreport.repository;
 
+import com.classreport.classreport.entity.GroupEntity;
 import com.classreport.classreport.entity.LessonInstanceEntity;
 import com.classreport.classreport.entity.LessonScheduleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,6 +26,13 @@ public interface LessonInstanceRepository extends JpaRepository<LessonInstanceEn
 
 
     Optional findByDate(LocalDate date);
+
+    @Query(value = "SELECT * FROM lesson_instances WHERE group_id = :groupId", nativeQuery = true)
+    List<LessonInstanceEntity> findByGroupId(Long groupId);
+
+
+    boolean existsByGroupAndDateAndIsExtraTrue(GroupEntity group, LocalDate date);
+
 
 
 

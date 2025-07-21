@@ -2,18 +2,14 @@ package com.classreport.classreport.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class DateRequest {
+public class LessonAddRequest {
 
-    private LocalDate startDate;
-    private LocalDate endDate;
-
+    private LessonScheduleRequest lessonSchedule;
     private Long groupId;
-
+    private LocalDate date;
 }

@@ -1,5 +1,7 @@
 package com.classreport.classreport.service;
 
+import com.classreport.classreport.entity.LessonInstanceEntity;
+import com.classreport.classreport.entity.LessonScheduleEntity;
 import com.classreport.classreport.mapper.LessonScheduleMapper;
 import com.classreport.classreport.model.exception.NotFoundException;
 import com.classreport.classreport.model.request.LessonScheduleRequest;
@@ -42,6 +44,18 @@ public class LessonScheduleService {
         log.info("Action.getAllSchedules.end");
         return apiResponse;
     }
+
+//    public ApiResponse getAllDates(){
+//        log.info("Action.getAllDates.start");
+//        var dates = lessonScheduleRepository.findAll().stream()
+//                .map(LessonScheduleEntity::getDate)
+//                .distinct()
+//                .sorted()
+//                .toList();
+//        ApiResponse apiResponse = new ApiResponse(dates);
+//        log.info("Action.getAllDates.end");
+//        return apiResponse;
+//    }
 
     public void softDeleteById(Long id){
         log.info("Action.softDeleteById.start for id {}", id);

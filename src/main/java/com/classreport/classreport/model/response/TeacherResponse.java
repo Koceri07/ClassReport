@@ -10,8 +10,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TeacherResponse extends UserResponse{
-
-    private List<StudentEntity> students;
-
+public class TeacherResponse extends UserResponse {
+    private List<StudentResponse> students;
 }

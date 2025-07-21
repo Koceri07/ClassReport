@@ -4,7 +4,10 @@ import com.classreport.classreport.model.request.StudentRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.StudentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/students")
@@ -13,9 +16,11 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    @PostMapping
-    public void create(@RequestBody StudentRequest studentRequest){
+    @PostMapping(value = "/add", consumes = "application/json")
+    public ApiResponse create(@RequestBody StudentRequest studentRequest){
         studentService.createStudent(studentRequest);
+        ApiResponse apiResponse = new ApiResponse("Student Add");
+        return apiResponse;
     }
 
     @GetMapping("/{id}")
@@ -26,6 +31,11 @@ public class StudentController {
     @GetMapping("/get-all")
     public ApiResponse getAll(){
         return studentService.getAllStudents();
+    }
+
+    @GetMapping("/filter/{id}")
+    public ApiResponse getByGroup(@PathVariable Long id){
+        return studentService.getStudentsByGroup(id);
     }
 
     @DeleteMapping("/{id}")

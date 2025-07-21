@@ -14,6 +14,5 @@ public class UserRequest {
     private String name;
     private String surname;
     private String password;
-    private String role;
-    private boolean isActive;
+
 }

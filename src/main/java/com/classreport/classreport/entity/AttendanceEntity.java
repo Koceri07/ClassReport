@@ -1,5 +1,6 @@
 package com.classreport.classreport.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class AttendanceEntity {
     private Boolean isAbsent;
     private String lateTime;
     private String note;
+    private Boolean isTemporaryTransfer;
 
     @ManyToOne
     @JoinColumn(name = "student_id")

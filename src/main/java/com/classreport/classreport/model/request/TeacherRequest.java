@@ -12,6 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 public class TeacherRequest extends UserRequest{
 
-    private List<StudentEntity> students;
+    private List<StudentRequest> students;
 
 }

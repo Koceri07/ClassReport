@@ -5,9 +5,11 @@ import com.classreport.classreport.entity.StudentEntity;
 import com.classreport.classreport.entity.UserEntity;
 import com.classreport.classreport.mapper.StudentMapper;
 import com.classreport.classreport.model.enums.Role;
+import com.classreport.classreport.model.exception.NotFoundException;
 import com.classreport.classreport.model.request.StudentRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.repository.AttendanceRepository;
+import com.classreport.classreport.repository.GroupRepository;
 import com.classreport.classreport.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,15 +23,27 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
     private final AttendanceRepository attendanceRepository;
+    private final GroupRepository groupRepository;
 
     @Transactional
     public void createStudent(StudentRequest studentRequest){
         log.info("Action.createStudent.start for id {}", studentRequest.getId());
+
         var student = StudentMapper.INSTANCE.requestToEntity(studentRequest);
         AttendanceEntity attendanceEntity = new AttendanceEntity();
         attendanceEntity.setStudent(student);
         attendanceRepository.save(attendanceEntity);
+        student.setActive(true);
+        student.setRole(Role.STUDENT);
         studentRepository.save(student);
+
+        var group = groupRepository.findById(studentRequest.getGroupId())
+                        .orElseThrow(() -> new NotFoundException("Id Not Found"));
+
+        student.getGroups().add(group);
+        group.getStudents().add(student);
+        groupRepository.save(group);
+        log.info("Student Group id {}", studentRequest.getGroupId());
         log.info("Action.createStudent.end for id {}", studentRequest.getId());
     }
 
@@ -48,10 +62,20 @@ public class StudentService {
         var students = studentRepository.findAll().stream()
 //                .filter(studentEntity -> studentEntity.getRole().equals(Role.STUDENT))
                 .filter(UserEntity::isActive)
-                .map(StudentMapper.INSTANCE::entityToRequest)
+                .map(StudentMapper.INSTANCE::entityToResponse)
                 .toList();
         ApiResponse apiResponse = new ApiResponse(students);
         log.info("Action.getAllStudents.end");
+        return apiResponse;
+    }
+
+    public ApiResponse getStudentsByGroup(Long id){
+        log.info("Action.getStudentsByGroup.start");
+        var students = studentRepository.getAllByGroup(id).stream()
+                        .map(StudentMapper.INSTANCE::entityToResponse)
+                                .toList();
+        ApiResponse apiResponse = new ApiResponse(students);
+        log.info("Action.getStudentsByGroup.end");
         return apiResponse;
     }
 

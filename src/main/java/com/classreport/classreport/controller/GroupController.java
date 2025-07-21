@@ -7,15 +7,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping
+@RequestMapping("/v1/groups")
 @RequiredArgsConstructor
 public class GroupController {
 
     private final GroupService groupService;
 
-    @PostMapping
-    public void create(GroupRequest groupRequest){
+    @PostMapping("/create")
+    public ApiResponse create(@RequestBody GroupRequest groupRequest){
         groupService.createGroup(groupRequest);
+        ApiResponse apiResponse = new ApiResponse("groud Added");
+        return apiResponse;
     }
 
     @GetMapping("/{id}")
@@ -23,9 +25,14 @@ public class GroupController {
         return groupService.getGroupById(id);
     }
 
-    @GetMapping
+    @GetMapping("/get-all")
     public ApiResponse getAll(){
         return groupService.getAllGroups();
+    }
+
+    @GetMapping("/get-teacher-id/{teacherId}")
+    public ApiResponse getByTeacherId(@PathVariable Long teacherId){
+        return groupService.getAllGroupsByTeacherId(teacherId);
     }
 
     @DeleteMapping("/{id}")
@@ -36,5 +43,10 @@ public class GroupController {
     @PutMapping("/{id}")
     public void softDelete(@PathVariable Long id){
         groupService.softDeleteById(id);
+    }
+
+    @GetMapping("/test/{groupId}")
+    public void test(@PathVariable Long groupId){
+        groupService.testGroupLessonSchedule(groupId);
     }
 }

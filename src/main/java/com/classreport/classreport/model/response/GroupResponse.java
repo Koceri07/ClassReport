@@ -16,7 +16,7 @@ public class GroupResponse {
     private Long id;
     private String groupName;
     private boolean isActive;
-    private List<StudentEntity> students;
-//    private List<LessonScheduleEntity> lessonSchedules;
+    private List<StudentResponse> students;
+//    private LessonScheduleResponse lessonSchedule;
 
 }

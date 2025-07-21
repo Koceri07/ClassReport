@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface GroupRepository extends JpaRepository<GroupEntity,Long> {
@@ -17,6 +18,10 @@ public interface GroupRepository extends JpaRepository<GroupEntity,Long> {
     @Modifying
     @Query(value = " UPDATE groups u SET u.is_active = false WHERE u.id =:id;", nativeQuery = true)
     void softDelete(@Param("id") Long id);
+
+
+    List<GroupEntity> findByTeacher_Id(Long teacherİd);
+
 
 
 }

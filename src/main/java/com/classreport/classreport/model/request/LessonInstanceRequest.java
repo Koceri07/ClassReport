@@ -17,8 +17,8 @@ public class LessonInstanceRequest {
 
     private LocalDate date;
 
-    private LessonScheduleEntity lessonSchedule;
+    private LessonScheduleRequest lessonSchedule;
 
-    private List<AttendanceEntity> attendances;
+    private List<AttendanceRequest> attendances;
 
 }

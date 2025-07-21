@@ -1,15 +1,17 @@
 package com.classreport.classreport.model.response;
 
-import com.classreport.classreport.entity.GroupEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentResponse extends UserResponse {
-    private Long groupId;
+public class LessonPreviewResponse {
+
+    private String startTime;
+    private String endTime;
+    private LocalDate date;
 }

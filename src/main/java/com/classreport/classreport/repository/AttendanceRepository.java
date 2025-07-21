@@ -5,6 +5,7 @@ import com.classreport.classreport.entity.LessonInstanceEntity;
 import com.classreport.classreport.entity.StudentEntity;
 import com.classreport.classreport.entity.TeacherEntity;
 import com.classreport.classreport.model.request.AttendanceRequest;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +19,14 @@ import java.util.Optional;
 
 @Repository
 public interface AttendanceRepository extends JpaRepository<AttendanceEntity, Long> {
+
+    @EntityGraph(attributePaths = {
+            "student",
+            "lessonInstance",
+            "lessonInstance.lessonSchedule",
+            "lessonInstance.lessonSchedule.group",
+            "lessonInstance.lessonSchedule.teacher"
+    })
     List<AttendanceEntity> findAll();
 
     @Transactional

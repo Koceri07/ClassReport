@@ -3,6 +3,7 @@ package com.classreport.classreport.model.response;
 import com.classreport.classreport.entity.LessonInstanceEntity;
 import com.classreport.classreport.entity.StudentEntity;
 import com.classreport.classreport.entity.TeacherEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,8 +22,11 @@ public class AttendanceResponse {
     private String lateTime;
     private String note;
 
-    private StudentEntity student;
-    private TeacherEntity teacher;
-    private LessonInstanceEntity lessonInstance;
+    private Long studentId;
+    private String studentName;
+
+//    private StudentResponse student;
+//    private TeacherResponse teacher;
+//    private LessonInstanceResponse lessonInstance;
 
 }

@@ -1,5 +1,7 @@
 package com.classreport.classreport.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,10 +25,18 @@ public class LessonInstanceEntity {
 
     private LocalDate date;
 
+    private boolean isExtra;
+
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name = "group_id",nullable = false)
+    private GroupEntity group;
+
+//    @JsonBackReferen
     @ManyToOne
     private LessonScheduleEntity lessonSchedule;
 
 
+//    @JsonBackReference
     @OneToMany(mappedBy = "lessonInstance")
     private List<AttendanceEntity> attendances;
 

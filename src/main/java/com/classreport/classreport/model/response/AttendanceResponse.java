@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -17,7 +18,7 @@ public class AttendanceResponse {
 
     private Long id;
 
-    private LocalDateTime date;
+    private LocalDate date;
     private Boolean isAbsent;
     private String lateTime;
     private String note;

@@ -1,10 +1,7 @@
 package com.classreport.classreport.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -14,20 +11,26 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TemporaryroupTransfer {
+@EqualsAndHashCode(of = "id")
+public class TemporaryGroupTransferEntity {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private StudentEntity student;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private GroupEntity fromGroup;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "to_group_id")
     private GroupEntity toGroup;
 
-    private LocalDate date;
+    private LocalDate startDate;
+
+    private LocalDate endDate;
+
+    private boolean isActive;
 }

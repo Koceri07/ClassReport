@@ -1,20 +1,26 @@
 package com.classreport.classreport.service;
 
-import com.classreport.classreport.entity.AttendanceEntity;
-import com.classreport.classreport.entity.StudentEntity;
-import com.classreport.classreport.entity.UserEntity;
+import com.classreport.classreport.entity.*;
 import com.classreport.classreport.mapper.StudentMapper;
 import com.classreport.classreport.model.enums.Role;
 import com.classreport.classreport.model.exception.NotFoundException;
 import com.classreport.classreport.model.request.StudentRequest;
 import com.classreport.classreport.model.response.ApiResponse;
+import com.classreport.classreport.model.response.StudentResponse;
 import com.classreport.classreport.repository.AttendanceRepository;
 import com.classreport.classreport.repository.GroupRepository;
 import com.classreport.classreport.repository.StudentRepository;
+import com.classreport.classreport.repository.TemporaryGroupTransferRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -24,6 +30,7 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final AttendanceRepository attendanceRepository;
     private final GroupRepository groupRepository;
+    private final TemporaryGroupTransferRepository temporaryGroupTransferRepository;
 
     @Transactional
     public void createStudent(StudentRequest studentRequest){
@@ -34,11 +41,12 @@ public class StudentService {
         attendanceEntity.setStudent(student);
         attendanceRepository.save(attendanceEntity);
         student.setActive(true);
+        student.setTransfer(false);
         student.setRole(Role.STUDENT);
         studentRepository.save(student);
 
         var group = groupRepository.findById(studentRequest.getGroupId())
-                        .orElseThrow(() -> new NotFoundException("Id Not Found"));
+                        .orElseThrow(() -> new NotFoundException("Group Id Not Found"));
 
         student.getGroups().add(group);
         group.getStudents().add(student);
@@ -69,15 +77,52 @@ public class StudentService {
         return apiResponse;
     }
 
-    public ApiResponse getStudentsByGroup(Long id){
-        log.info("Action.getStudentsByGroup.start");
-        var students = studentRepository.getAllByGroup(id).stream()
-                        .map(StudentMapper.INSTANCE::entityToResponse)
-                                .toList();
-        ApiResponse apiResponse = new ApiResponse(students);
-        log.info("Action.getStudentsByGroup.end");
-        return apiResponse;
+    public ApiResponse getStudentsByGroup(Long groupId) {
+        log.info("Action.getStudentsByGroup.start for id {}", groupId);
+        log.info("Current date: {}", LocalDate.now());  // Tarixi yoxlamaq üçün
+
+        Set<Long> seenIds = new HashSet<>();
+        List<StudentResponse> allStudents = new ArrayList<>();
+
+        // Əsas qrupdakı şagirdlər
+        studentRepository.getAllByGroup(groupId).forEach(student -> {
+            StudentResponse s = StudentMapper.INSTANCE.entityToResponse(student);
+            if (seenIds.add(s.getId())) {
+                allStudents.add(s);
+            }
+        });
+
+        // Müvəqqəti transferdəki aktiv şagirdlər
+        List<TemporaryGroupTransferEntity> transferList =
+                temporaryGroupTransferRepository.findActiveTransfersToGroup(groupId, LocalDate.now());
+
+        log.info("Found {} active transfers", transferList.size());  // Neçə transfer tapıldı?
+
+        for (TemporaryGroupTransferEntity transfer : transferList) {
+            if (transfer.getToGroup() == null) {
+                log.error("TRANSFER ERROR: transferId={} has NULL toGroup", transfer.getId());
+                continue;
+            }
+
+            if (transfer.getStudent() == null) {
+                log.error("TRANSFER ERROR: transferId={} has NULL student", transfer.getId());
+                continue;
+            }
+
+            StudentResponse s = StudentMapper.INSTANCE.entityToResponse(transfer.getStudent());
+            if (seenIds.add(s.getId())) {
+                allStudents.add(s);
+            }
+        }
+
+        log.info("Action.getStudentsByGroup.end for id {}", groupId);
+        return new ApiResponse(allStudents);
     }
+
+
+
+
+
 
     public void hardDeleteById(Long id){
         log.info("Action.hardDeleteById.start for id {}", id);

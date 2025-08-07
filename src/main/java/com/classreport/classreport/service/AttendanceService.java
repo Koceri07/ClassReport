@@ -86,7 +86,7 @@ public class AttendanceService {
                 });
 
         attendance.setIsAbsent(!request.getPresent());
-        attendance.setDate(lessonInstance.getDate().atStartOfDay());
+        attendance.setDate(LocalDate.from(lessonInstance.getDate().atStartOfDay()));
         attendance.setLateTime(request.getLateTime());
         attendance.setNote(request.getNote());
 

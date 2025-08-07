@@ -21,7 +21,7 @@ public class AttendanceEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime date;
+    private LocalDate date;
     private Boolean isAbsent;
     private String lateTime;
     private String note;

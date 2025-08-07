@@ -207,16 +207,12 @@ public class LessonInstanceService {
 
 
     public ApiResponse previewTodayLesson(Long id){
-        var groupEntity = groupRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Id Not Found"));
+//        var groupEntity = groupRepository.findById(id)
+//                .orElseThrow(() -> new NotFoundException("Id Not Found"));
 
         var lessonSchedule = lessonScheduleRepository.findByGroupId(id);
         LocalDate today = LocalDate.now();
-        DayOfWeek todaDay = today.getDayOfWeek();
-
-        if (lessonSchedule == null || !lessonSchedule.getDaysOfWeek().contains(todaDay)){
-            throw new TodayHaventLessonException("Today haven't Lesson");
-        }
+//        DayOfWeek todaDay = today.getDayOfWeek();
 
         String start = lessonSchedule.getStartTime() != null ? lessonSchedule.getStartTime().toString() : null;
         String end = lessonSchedule.getEndTime() != null ? lessonSchedule.getEndTime().toString() : null;
@@ -233,7 +229,7 @@ public class LessonInstanceService {
                 .orElseThrow(() -> new NotFoundException("Id Not Found"));
 
         var lessonSchedule = lessonScheduleRepository.findByGroupId(id);
-        var lessonScheduleResponse = LessonScheduleMapper.INSTANCE.entityToResponse(lessonSchedule);
+//        var lessonScheduleResponse = LessonScheduleMapper.INSTANCE.entityToResponse(lessonSchedule);
 
         LocalDate today = LocalDate.now();
         DayOfWeek todayDay = today.getDayOfWeek();

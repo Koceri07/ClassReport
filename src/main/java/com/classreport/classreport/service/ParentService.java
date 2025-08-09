@@ -7,7 +7,6 @@ import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.repository.ParentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.NotFound;
 import org.springframework.stereotype.Service;
 
 @Service

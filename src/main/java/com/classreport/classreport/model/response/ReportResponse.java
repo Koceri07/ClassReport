@@ -1,19 +1,22 @@
 package com.classreport.classreport.model.response;
 
-import com.classreport.classreport.model.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponse {
+public class ReportResponse {
 
     private Long id;
 
-    private String name;
-    private String surname;
-    private Role role;
-    private boolean isActive;
+    private StudentResponse student;
+
+    private String content;
+
+    private LocalDate reportDate;
+
 }

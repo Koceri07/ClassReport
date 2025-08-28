@@ -26,4 +26,6 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
             "WHERE u.id = :groupId " +
             "AND s.isTransfer = false")
     List<StudentEntity> getAllByGroup(@Param("groupId") Long id);
+
+    Long id(Long id);
 }

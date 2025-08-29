@@ -20,7 +20,7 @@ import java.util.List;
 public class ParentEntity extends UserEntity{
 
     @ManyToMany
-    private List<StudentEntity> children;
+    private List<StudentEntity> students;
 
 
 }

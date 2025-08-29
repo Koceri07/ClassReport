@@ -14,6 +14,5 @@ public interface ReportMapper {
 //    @Mapping(target = "teacher", ignore = true)
     ReportResponse entityToResponse(ReportEntity entity);
 
-    @Mapping(target = "teacher", ignore = true)
     ReportEntity requestToEntity(ReportRequest reportRequest);
 }

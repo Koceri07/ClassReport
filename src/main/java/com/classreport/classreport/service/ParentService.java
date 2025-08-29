@@ -1,10 +1,14 @@
 package com.classreport.classreport.service;
 
+import com.classreport.classreport.entity.StudentEntity;
 import com.classreport.classreport.mapper.ParentMapper;
+import com.classreport.classreport.mapper.StudentMapper;
+import com.classreport.classreport.model.enums.Role;
 import com.classreport.classreport.model.exception.NotFoundException;
 import com.classreport.classreport.model.request.ParentRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.repository.ParentRepository;
+import com.classreport.classreport.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,16 +19,36 @@ import org.springframework.stereotype.Service;
 public class ParentService {
 
     private final ParentRepository parentRepository;
+    private final StudentRepository studentRepository;
 
 
     public ApiResponse createParent(ParentRequest request){
         log.info("Action.createParent.start for id {}", request.getId());
         var parent = ParentMapper.INSTANCE.requestToEntity(request);
+        parent.setRole(Role.PARENT);
+        parent.setActive(true);
 
         parentRepository.save(parent);
 
         ApiResponse apiResponse = new ApiResponse("success");
         log.info("Action.createParent.end for id {}", request.getId());
+        return apiResponse;
+    }
+
+    public ApiResponse linkStudent(String studentCode, Long parentId){
+        log.info("Action.linkStudent.start");
+        StudentEntity studentEntity = studentRepository.findByParentInvadeCodeAndActiveTrue(studentCode);
+
+//        var parent = parentRepository.findById(parentId)
+        var parent = parentRepository.findById(14L)
+
+                .orElseThrow(() -> new NotFoundException("Parent Id Not Found"));
+
+        parent.getStudents().add(studentEntity);
+
+        parentRepository.save(parent);
+        ApiResponse apiResponse = new ApiResponse("success");
+        log.info("Action.linkStudent.end");
         return apiResponse;
     }
 
@@ -46,6 +70,18 @@ public class ParentService {
         var parent = ParentMapper.INSTANCE.EntityToResponse(parentEntity);
         ApiResponse apiResponse = new ApiResponse(parent);
         log.info("Action.getParentById.end for id {}", id);
+        return apiResponse;
+    }
+
+    public ApiResponse getStudentsByParentId(Long parentId){
+        log.info("Action.getStudentsByParentId.start for id {}", parentId);
+
+        var parent = parentRepository.findById(parentId)
+                        .orElseThrow(() -> new NotFoundException("Parent Id Not Found"));
+
+        var students = parent.getStudents();
+        ApiResponse apiResponse = new ApiResponse(students);
+        log.info("Action.getStudentsByParentId.end for id {}", parentId);
         return apiResponse;
     }
 

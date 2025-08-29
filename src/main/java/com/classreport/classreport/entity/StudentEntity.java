@@ -29,6 +29,13 @@ public class StudentEntity extends UserEntity{
             inverseJoinColumns = @JoinColumn(name = "group_id"))
     private List<GroupEntity> groups = new ArrayList<>();
 
+
+    private String parentInvadeCode;
+
+    @ManyToMany
+    private List<ParentEntity> parent;
+
+
     private boolean isTransfer;
 
 }

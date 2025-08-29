@@ -34,7 +34,7 @@ public class ReportService {
         var student = studentRepository.findById(reportRequest.getStudent().getId())
                 .orElseThrow(() -> new NotFoundException("Student Id Not Found"));
 
-        var teacher = teacherRepository.findById(2L)
+        var teacher = teacherRepository.findById(reportRequest.getTeacher().getId())
                 .orElseThrow(() -> new NotFoundException("Teacher Id Not Found"));
 
         var reports = reportRepository.findByStudentAndReportDate(student, LocalDate.now());
@@ -97,7 +97,7 @@ public class ReportService {
     public ApiResponse getByTeacherIdAndStudentId(Long studentId, Long teacherId){
         log.info("Action.getByTeacherIdAndStudentId.start for student id {} teacher id {}",studentId,teacherId);
 
-        var reports = reportRepository.findByStudentIdAndTeacherId(studentId,2L).stream()
+        var reports = reportRepository.findByStudentIdAndTeacherId(studentId,teacherId).stream()
                 .map(ReportMapper.INStANCE::entityToResponse)
                 .toList();
         ApiResponse apiResponse = new ApiResponse(reports);

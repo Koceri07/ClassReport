@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/parents")
 @RequiredArgsConstructor
+
 public class ParentController {
 
     private final ParentService parentService;
@@ -16,6 +17,11 @@ public class ParentController {
     @PostMapping("/create")
     public ApiResponse create(@RequestBody ParentRequest request){
         return parentService.createParent(request);
+    }
+
+    @PatchMapping("/link-student/id/{parentId}")
+    public ApiResponse linkStudent(@RequestBody String studentCode, @PathVariable Long parentId){
+        return parentService.linkStudent(studentCode,parentId);
     }
 
     @GetMapping("/id/{id}")
@@ -26,6 +32,11 @@ public class ParentController {
     @GetMapping("/all")
     public ApiResponse getAll(){
         return parentService.getAllParents();
+    }
+
+    @GetMapping("/get-student/parentId/{parentId}")
+    public ApiResponse getStudentById(@PathVariable Long parentId){
+        return parentService.getStudentsByParentId(parentId);
     }
 
     @PatchMapping("/soft-delete/{id}")

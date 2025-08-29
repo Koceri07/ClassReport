@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -36,6 +33,7 @@ public class StudentService {
     public void createStudent(StudentRequest studentRequest){
         log.info("Action.createStudent.start for id {}", studentRequest.getId());
 
+
         var student = StudentMapper.INSTANCE.requestToEntity(studentRequest);
         AttendanceEntity attendanceEntity = new AttendanceEntity();
         attendanceEntity.setStudent(student);
@@ -43,6 +41,7 @@ public class StudentService {
         student.setActive(true);
         student.setTransfer(false);
         student.setRole(Role.STUDENT);
+        student.setParentInvadeCode(UUID.randomUUID().toString().substring(0, 8));
         studentRepository.save(student);
 
         var group = groupRepository.findById(studentRequest.getGroupId())

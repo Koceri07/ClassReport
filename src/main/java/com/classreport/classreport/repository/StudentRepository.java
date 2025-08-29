@@ -27,5 +27,12 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
             "AND s.isTransfer = false")
     List<StudentEntity> getAllByGroup(@Param("groupId") Long id);
 
-    Long id(Long id);
+
+    @Query("SELECT s FROM StudentEntity s WHERE s.parentInvadeCode = :parentInvadeCode AND s.isActive = true")
+    StudentEntity findByParentInvadeCodeAndActiveTrue(@Param("parentInvadeCode") String parentInvadeCode);
+
+//    StudentEntity findByParentInvadeCodeAndActiveTrue(String parentInvadeCode);
+
+
+
 }

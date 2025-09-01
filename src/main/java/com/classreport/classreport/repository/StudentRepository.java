@@ -34,5 +34,7 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
 //    StudentEntity findByParentInvadeCodeAndActiveTrue(String parentInvadeCode);
 
 
+    @Query("SELECT g.id FROM StudentEntity s JOIN s.groups g WHERE s.id = :studentId")
+    List<Long> findGroupIdsByStudentId(@Param("studentId") Long studentId);
 
 }

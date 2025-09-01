@@ -20,7 +20,8 @@ public interface GroupRepository extends JpaRepository<GroupEntity,Long> {
     void softDelete(@Param("id") Long id);
 
 
-    List<GroupEntity> findByTeacher_Id(Long teacherİd);
+    List<GroupEntity> findByTeacher_Id(Long teacherId);
+
 
 
 

@@ -5,6 +5,7 @@ import com.classreport.classreport.model.request.AttendanceUpdateRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.AttendanceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,11 +30,35 @@ public class AttendanceController {
         return attendanceService.getAllAttendance();
     }
 
-//    @PostMapping("/update")
-//    public void update(@RequestBody AttendanceRequest request){
-//        attendanceService.updateAttendances(request);
-//    }
+    @GetMapping("/student/{studentId}")
+    public ApiResponse getByStudentId(@PathVariable Long studentId){
+        return attendanceService.getAttendanceByStudentId(studentId);
+    }
 
+    @GetMapping("/get-student/{studentId}/absent-false")
+    public ApiResponse getByStudentIdAndAbsentFalse(@PathVariable Long studentId){
+        return attendanceService.getAbsentStudentAttendancesByStudentId(studentId);
+    }
+
+    @GetMapping("/get-student/{studentId}/absent-true")
+    public ApiResponse getByStudentIdAndAbsentTrue(@PathVariable Long studentId) {
+        return attendanceService.getNotAbsentStudentAttendancesByStudentId(studentId);
+    }
+
+    @GetMapping("/get-student/{studentId}/stats")
+    public ApiResponse getCountByStudentIdAndIsAbsentFalse(@PathVariable Long studentId){
+        return attendanceService.getAbsentStudentAttendancesCountByStudentId(studentId);
+    }
+
+    @GetMapping("/get-stats/student/{studentId}")
+    public ApiResponse getStats(@PathVariable Long studentId) {
+        return attendanceService.getAttendanceStats(studentId);
+    }
+
+    @GetMapping("/get-percent/student/{studentId}")
+    public ApiResponse getPercent(@PathVariable Long studentId) {
+        return attendanceService.getAttendancePercentByGroupId(studentId);
+    }
 
     @PostMapping("/update")
     public ApiResponse update(@RequestBody AttendanceUpdateRequest request) throws Throwable {

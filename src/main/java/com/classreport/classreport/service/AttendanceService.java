@@ -8,14 +8,18 @@ import com.classreport.classreport.model.exception.NotFoundException;
 import com.classreport.classreport.model.request.AttendanceRequest;
 import com.classreport.classreport.model.request.AttendanceUpdateRequest;
 import com.classreport.classreport.model.response.ApiResponse;
+import com.classreport.classreport.model.response.StudentAttendancesStatsResponse;
 import com.classreport.classreport.repository.AttendanceRepository;
 import com.classreport.classreport.repository.LessonInstanceRepository;
+import com.classreport.classreport.repository.StudentAttendancesStatsRepository;
 import com.classreport.classreport.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -25,6 +29,7 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final StudentRepository studentRepository;
     private final LessonInstanceRepository lessonInstanceRepository;
+    private final StudentAttendancesStatsRepository attendancesStatsRepository;
 
     public void createAttendance(AttendanceRequest request){
         log.info("Action.createAttendance.start for id {}", request.getId());
@@ -53,20 +58,109 @@ public class AttendanceService {
         return apiResponse;
     }
 
+    public ApiResponse getAttendanceByStudentId(Long studentId){
+        log.info("Action.getByStudentId.start for student id {}", studentId);
 
-//    public void updateAttendances(AttendanceRequest request){
-//        log.info("Action.updateAttendances.start for id {}", request.getId());
-//        attendanceRepository.updateAttendances(request.getId(),
-//                request.getDate(),
-//                request.getIsAbsent(),
-//                request.getLateTime(),
-//                request.getNote(),
-//                request.getStudent(),
-//                request.getTeacher(),
-//                request.getLessonInstance()
-//                );
-//        log.info("Action.updateAttendances.end for id {}", request.getId());
-//    }
+        var attendanceEntities = attendanceRepository.findByStudentId(studentId);
+
+        var attendances = attendanceEntities.stream()
+                        .map(AttendanceMapper.INSTANCE::entityToResponse)
+                                .toList();
+
+        ApiResponse apiResponse = new ApiResponse(attendances);
+
+        log.info("Action.getByStudentId.end for student id {}", studentId);
+        return apiResponse;
+    }
+
+    public ApiResponse getAbsentStudentAttendancesByStudentId(Long studentId){
+        log.info("Action.getAbsentStudentAttendancesByStudentId.start for student id {}", studentId);
+
+        var inLessonDaysEntities = attendanceRepository.findByStudentIdAndIsAbsent(studentId, Boolean.FALSE);
+
+        var inLessonDays = inLessonDaysEntities.stream()
+                        .map(AttendanceMapper.INSTANCE::entityToResponse)
+                                .toList();
+
+        ApiResponse apiResponse = new ApiResponse(inLessonDays);
+        log.info("Action.getAbsentStudentAttendancesByStudentId.end for student id {}", studentId);
+        return apiResponse;
+    }
+
+
+
+    public ApiResponse getNotAbsentStudentAttendancesByStudentId(Long studentId){
+        log.info("Action.getAbsentStudentAttendancesByStudentId.start for student id {}", studentId);
+
+        var inLessonDaysEntities = attendanceRepository.findByStudentIdAndIsAbsent(studentId, Boolean.FALSE);
+
+        var groupId = studentRepository.findGroupIdsByStudentId(studentId).get(0);
+
+        var lessonInstances = lessonInstanceRepository.findByGroupId(groupId).size();
+
+        int lessonDaysCount = inLessonDaysEntities.size();
+
+        int notAbsentDays = lessonInstances - inLessonDaysEntities.size();
+
+        ApiResponse apiResponse = new ApiResponse(notAbsentDays);
+        log.info("Action.getAbsentStudentAttendancesByStudentId.end for student id {}", studentId);
+        return apiResponse;
+    }
+
+
+    public ApiResponse getAttendancePercentByGroupId(Long studentId) {
+        log.info("Action.getAttendancePercentByGroupId.start for student id {}", studentId);
+
+        var groupId = studentRepository.findGroupIdsByStudentId(studentId).get(0);
+
+        int allLessons = lessonInstanceRepository.findByGroupId(groupId).size();
+        int inLessonDays = attendanceRepository.findByStudentIdAndIsAbsent(studentId, Boolean.FALSE).size();
+
+        int percent = (100 * inLessonDays) / allLessons;
+
+        // Cavabı map şəklində formalaşdırırıq
+        Map<String, Object> result = new HashMap<>();
+        result.put("percent", percent);
+        result.put("presentLessons", inLessonDays);
+        result.put("totalLessons", allLessons);
+
+        ApiResponse apiResponse = new ApiResponse(percent);
+
+        log.info("Action.getAttendancePercentByGroupId.end for student id {}", studentId);
+        return apiResponse;
+    }
+
+
+
+    public ApiResponse getAbsentStudentAttendancesCountByStudentId(Long studentId){
+        log.info("Action.getAbsentStudentAttendancesCountByStudentId.start for student id {}", studentId);
+
+        var inLessonDaysEntities = attendanceRepository.findByStudentIdAndIsAbsent(studentId, Boolean.FALSE);
+
+        Integer total = inLessonDaysEntities.size();
+
+        ApiResponse apiResponse = new ApiResponse(total);
+        log.info("Action.getAbsentStudentAttendancesCountByStudentId.end for student id {}", studentId);
+        return apiResponse;
+    }
+
+
+    public ApiResponse getAttendanceStats(Long studentId) {
+        log.info("Action.getAttendanceStats.start");
+        var projection = attendancesStatsRepository.getStudentAttendanceStats(studentId);
+
+        var stats = new StudentAttendancesStatsResponse();
+        stats.setAbsentLessons(projection.getAbsentLessons());
+        stats.setAttendedLessons(projection.getAttendedLessons());
+        stats.setFullName(projection.getFullName());
+        stats.setTotalLessons(projection.getTotalLessons());
+        stats.setStudentId(projection.getStudentId());
+
+        ApiResponse apiResponse = new ApiResponse(stats);
+        log.info("Action.getAttendanceStats.end");
+        return apiResponse;
+    }
+
 
     public void update(AttendanceUpdateRequest request) throws Throwable {
         log.info("Updating attendance for studentId {}, date {}, present {}", request.getStudentId(), request.getDate(), request.getPresent());
@@ -90,7 +184,6 @@ public class AttendanceService {
         attendance.setLateTime(request.getLateTime());
         attendance.setNote(request.getNote());
 
-//        lessonInstance.getDate().atStartOfDay()
         attendanceRepository.save(attendance);
 
     }

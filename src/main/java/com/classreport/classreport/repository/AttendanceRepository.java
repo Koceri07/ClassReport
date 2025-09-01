@@ -4,7 +4,6 @@ import com.classreport.classreport.entity.AttendanceEntity;
 import com.classreport.classreport.entity.LessonInstanceEntity;
 import com.classreport.classreport.entity.StudentEntity;
 import com.classreport.classreport.entity.TeacherEntity;
-import com.classreport.classreport.model.request.AttendanceRequest;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -59,4 +59,12 @@ public interface AttendanceRepository extends JpaRepository<AttendanceEntity, Lo
     void softDelete(@Param("id") Long id);
 
     Optional findByStudentAndLessonInstance(StudentEntity student, LessonInstanceEntity lessonInstance);
+
+
+    List<AttendanceEntity> findByStudentId(Long studentİd);
+
+    @Query("SELECT a FROM AttendanceEntity a WHERE a.student.id = :studentId AND a.isAbsent = :isAbsent")
+    List<AttendanceEntity> findByStudentIdAndIsAbsent(@Param("studentId") Long studentId,@Param("isAbsent") Boolean isAbsent);
+
+
 }

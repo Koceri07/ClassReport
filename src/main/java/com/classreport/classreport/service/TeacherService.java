@@ -15,10 +15,11 @@ import org.springframework.stereotype.Service;
 public class TeacherService {
 
     private final TeacherRepository teacherRepository;
+    private final TeacherMapper teacherMapper;
 
     public void createTeacher(TeacherRequest teacherRequest){
         log.info("Action.createTeacher.start for id {}", teacherRequest.getId());
-        var teacherEntity = TeacherMapper.INSTANCE.requestToEntity(teacherRequest);
+        var teacherEntity = teacherMapper.requestToEntity(teacherRequest);
         teacherRepository.save(teacherEntity);
         log.info("Action.createTeacher.end for id {}", teacherRequest.getId());
     }
@@ -27,7 +28,7 @@ public class TeacherService {
         log.info("Action.getTeacherById.start for id {}", id);
         var teacherEntity = teacherRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Id Not Found"));
-        var teacher = TeacherMapper.INSTANCE.entityToResponse(teacherEntity);
+        var teacher = teacherMapper.entityToResponse(teacherEntity);
         ApiResponse apiResponse = new ApiResponse(teacher);
         log.info("Action.getTeacherById.end for id {}", id);
         return apiResponse;
@@ -36,7 +37,7 @@ public class TeacherService {
     public ApiResponse getAllTeachers(){
         log.info("Action.getAllTeachers.start");
         var teachers = teacherRepository.findAll().stream()
-                .map(TeacherMapper.INSTANCE::entityToRequest)
+                .map(teacherMapper::entityToRequest)
                 .toList();
         ApiResponse apiResponse = new ApiResponse(teachers);
         log.info("Action.getAllTeachers.end");

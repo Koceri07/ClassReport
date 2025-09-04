@@ -5,7 +5,6 @@ import com.classreport.classreport.entity.LessonInstanceEntity;
 import com.classreport.classreport.entity.LessonScheduleEntity;
 import com.classreport.classreport.mapper.GroupMapper;
 import com.classreport.classreport.mapper.LessonInstanceMapper;
-import com.classreport.classreport.mapper.LessonScheduleMapper;
 import com.classreport.classreport.model.exception.AlreadyExistsException;
 import com.classreport.classreport.model.exception.NotFoundException;
 import com.classreport.classreport.model.exception.TodayHaventLessonException;

@@ -4,8 +4,10 @@ import com.classreport.classreport.model.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserResponse {
@@ -14,6 +16,12 @@ public class UserResponse {
 
     private String name;
     private String surname;
+
     private Role role;
+
+    private String token;
+
     private boolean isActive;
+
+    private String email;
 }

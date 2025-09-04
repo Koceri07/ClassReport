@@ -2,7 +2,7 @@ package com.classreport.classreport.service;
 
 import com.classreport.classreport.entity.LessonInstanceEntity;
 import com.classreport.classreport.entity.LessonScheduleEntity;
-import com.classreport.classreport.mapper.LessonScheduleMapper;
+import com.classreport.classreport.mapper.LessonScheduleMapperManual;
 import com.classreport.classreport.model.exception.NotFoundException;
 import com.classreport.classreport.model.request.LessonScheduleRequest;
 import com.classreport.classreport.model.response.ApiResponse;
@@ -17,10 +17,11 @@ import org.springframework.stereotype.Service;
 public class LessonScheduleService {
 
     private final LessonScheduleRepository lessonScheduleRepository;
+    private final LessonScheduleMapperManual lessonScheduleMapper;
 
     public void createSchedule(LessonScheduleRequest request){
         log.info("Action.createSchedule.start for id {}", request.getId());
-        var entity = LessonScheduleMapper.INSTANCE.requestToEntity(request);
+        var entity = lessonScheduleMapper.requestToEntity(request);
         lessonScheduleRepository.save(entity);
         log.info("Action.createSchedule.end for id {}", request.getId());
     }
@@ -29,7 +30,7 @@ public class LessonScheduleService {
         log.info("Action.getScheduleById.start for id {}", id);
         var scheduleEntity = lessonScheduleRepository.findById(id)
                         .orElseThrow(() -> new NotFoundException("Id Not Found"));
-        var response = LessonScheduleMapper.INSTANCE.entityToResponse(scheduleEntity);
+        var response = lessonScheduleMapper.entityToResponse(scheduleEntity);
         ApiResponse apiResponse = new ApiResponse(response);
         log.info("Action.getScheduleById.end for id {}", id);
         return apiResponse;
@@ -38,7 +39,7 @@ public class LessonScheduleService {
     public ApiResponse getAllSchedules(){
         log.info("Action.getAllSchedules.start");
         var schedules = lessonScheduleRepository.findAll().stream()
-                        .map(LessonScheduleMapper.INSTANCE::entityToRequest)
+                        .map(lessonScheduleMapper::entityToRequest)
                                 .toList();
         ApiResponse apiResponse = new ApiResponse(schedules);
         log.info("Action.getAllSchedules.end");

@@ -6,7 +6,7 @@ import com.classreport.classreport.model.response.StudentResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(uses = {GroupMapper.class})
+@Mapper(uses = {GroupMapper.class},componentModel = "spring")
 public interface StudentMapper {
 
     StudentMapper INSTANCE = Mappers.getMapper(StudentMapper.class);

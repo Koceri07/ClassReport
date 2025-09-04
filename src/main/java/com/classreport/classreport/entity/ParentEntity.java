@@ -1,13 +1,11 @@
 package com.classreport.classreport.entity;
 
+import com.classreport.classreport.model.enums.Role;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -15,6 +13,7 @@ import java.util.List;
 @Table
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParentEntity extends UserEntity{
@@ -24,3 +23,4 @@ public class ParentEntity extends UserEntity{
 
 
 }
+

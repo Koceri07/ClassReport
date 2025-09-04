@@ -24,6 +24,7 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
+    private final ReportMapper reportMapper;
 
 
     @Transactional
@@ -43,7 +44,7 @@ public class ReportService {
             throw new AlreadyExistsException("This Month Report Already Exist");
         }
 
-        var reportEntity = ReportMapper.INStANCE.requestToEntity(reportRequest);
+        var reportEntity = reportMapper.requestToEntity(reportRequest);
 
         reportEntity.setActive(true);
         reportEntity.setStudent(student);
@@ -64,7 +65,7 @@ public class ReportService {
         var report = reportRepository.findById(id)
                         .orElseThrow(() -> new NotFoundException("Report Id Not Found"));
 
-        var reportResponse = ReportMapper.INStANCE.entityToResponse(report);
+        var reportResponse = reportMapper.entityToResponse(report);
         ApiResponse apiResponse = new ApiResponse(reportResponse);
         log.info("Action.getReportById.end for id {}",id);
         return apiResponse;
@@ -74,7 +75,7 @@ public class ReportService {
         log.info("Action.getByStudentId.start for student id {}", id);
 
         var reports = reportRepository.findByStudent_Id(id).stream()
-                .map(ReportMapper.INStANCE::entityToResponse)
+                .map(reportMapper::entityToResponse)
                 .toList();
         ApiResponse apiResponse = new ApiResponse(reports);
 
@@ -86,7 +87,7 @@ public class ReportService {
         log.info("Action.getByTeacherId.start for teacher id {}", teacherId);
 
         var reports = reportRepository.findByTeacher_Id(teacherId).stream()
-                .map(ReportMapper.INStANCE::entityToResponse)
+                .map(reportMapper::entityToResponse)
                 .toList();
         ApiResponse apiResponse = new ApiResponse(reports);
 
@@ -98,7 +99,7 @@ public class ReportService {
         log.info("Action.getByTeacherIdAndStudentId.start for student id {} teacher id {}",studentId,teacherId);
 
         var reports = reportRepository.findByStudentIdAndTeacherId(studentId,teacherId).stream()
-                .map(ReportMapper.INStANCE::entityToResponse)
+                .map(reportMapper::entityToResponse)
                 .toList();
         ApiResponse apiResponse = new ApiResponse(reports);
 
@@ -109,7 +110,7 @@ public class ReportService {
     public ApiResponse getAllReports(){
         log.info("Action.getAllReports.start");
         var reports = reportRepository.findAll().stream()
-                        .map(ReportMapper.INStANCE::entityToResponse)
+                        .map(reportMapper::entityToResponse)
                                 .toList();
 
         ApiResponse apiResponse = new ApiResponse(reports);

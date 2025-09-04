@@ -8,10 +8,13 @@ import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import net.bytebuddy.implementation.bind.annotation.SuperCall;
 
 import java.util.List;
 
 @Data
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 public class StudentRequest extends UserRequest{

@@ -2,16 +2,15 @@ package com.classreport.classreport.service;
 
 import com.classreport.classreport.entity.LessonInstanceEntity;
 import com.classreport.classreport.mapper.LessonInstanceMapper;
-import com.classreport.classreport.mapper.LessonScheduleMapper;
+import com.classreport.classreport.mapper.LessonScheduleMapperManual;
 import com.classreport.classreport.model.exception.NotFoundException;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.model.response.GroupDetailsResponse;
 import com.classreport.classreport.model.response.LessonInstanceResponse;
 import com.classreport.classreport.model.response.LessonScheduleResponse;
-import com.classreport.classreport.repository.AttendanceRepository;
 import com.classreport.classreport.repository.GroupRepository;
 import com.classreport.classreport.repository.LessonInstanceRepository;
-import com.classreport.classreport.repository.LessonScheduleRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,8 +24,8 @@ import java.util.stream.Collectors;
 public class GroupDetailsService {
 
     private final GroupRepository groupRepository;
-    private final LessonScheduleRepository lessonScheduleRepository;
     private final LessonInstanceRepository lessonInstanceRepository;
+    private final LessonScheduleMapperManual lessonScheduleMapperManual;
 
     public ApiResponse getGroupDetails(Long groupId){
         log.info("Action.getGroupDetails.start for id {}", groupId);
@@ -42,7 +41,7 @@ public class GroupDetailsService {
                 .map(LessonInstanceEntity::getLessonSchedule)
                 .toList();
         List<LessonScheduleResponse> lessonSchedules = lessonSchedule.stream()
-                .map(LessonScheduleMapper.INSTANCE::entityToResponse)
+                .map(lessonScheduleMapperManual::entityToResponse)
                 .toList();
 
         GroupDetailsResponse groupDetails = new GroupDetailsResponse();

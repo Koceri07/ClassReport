@@ -20,11 +20,12 @@ public class ParentService {
 
     private final ParentRepository parentRepository;
     private final StudentRepository studentRepository;
+    private final ParentMapper parentMapper;
 
 
     public ApiResponse createParent(ParentRequest request){
         log.info("Action.createParent.start for id {}", request.getId());
-        var parent = ParentMapper.INSTANCE.requestToEntity(request);
+        var parent = parentMapper.requestToEntity(request);
         parent.setRole(Role.PARENT);
         parent.setActive(true);
 
@@ -55,7 +56,7 @@ public class ParentService {
     public ApiResponse getAllParents(){
         log.info("Action.getAllParents.start");
         var parents = parentRepository.findAll().stream()
-                        .map(ParentMapper.INSTANCE::EntityToResponse)
+                        .map(parentMapper::entityToResponse)
                                 .toList();
         ApiResponse apiResponse = new ApiResponse(parents);
         log.info("Action.getAllParents.end");
@@ -67,7 +68,7 @@ public class ParentService {
         var parentEntity = parentRepository.findById(id)
                         .orElseThrow(() -> new NotFoundException("Id Not Found"));
 
-        var parent = ParentMapper.INSTANCE.EntityToResponse(parentEntity);
+        var parent = parentMapper.entityToResponse(parentEntity);
         ApiResponse apiResponse = new ApiResponse(parent);
         log.info("Action.getParentById.end for id {}", id);
         return apiResponse;

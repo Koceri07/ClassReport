@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
@@ -19,4 +20,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query(value = " UPDATE users u SET u.is_active = false WHERE u.id =:id;", nativeQuery = true)
     void softDelete(@Param("id") Long id);
 
+    boolean existsByEmail(String email);
+
+    Optional<UserEntity> findByEmail(String email);
 }

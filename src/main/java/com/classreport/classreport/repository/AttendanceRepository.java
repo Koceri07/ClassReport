@@ -58,10 +58,14 @@ public interface AttendanceRepository extends JpaRepository<AttendanceEntity, Lo
     @Query(value = " UPDATE attendances u SET u.is_active = false WHERE u.id =:id;", nativeQuery = true)
     void softDelete(@Param("id") Long id);
 
-    Optional findByStudentAndLessonInstance(StudentEntity student, LessonInstanceEntity lessonInstance);
+//    Optional findByStudentAndLessonInstance(StudentEntity student, LessonInstanceEntity lessonInstance);
+
+    Optional<AttendanceEntity> findByStudentAndLessonInstance(StudentEntity student, LessonInstanceEntity lessonInstance);
 
 
-    List<AttendanceEntity> findByStudentId(Long studentİd);
+    List<AttendanceEntity> findByStudentId(Long studentId);
+
+    List<AttendanceEntity> findByGroupId(Long groupId);
 
     @Query("SELECT a FROM AttendanceEntity a WHERE a.student.id = :studentId AND a.isAbsent = :isAbsent")
     List<AttendanceEntity> findByStudentIdAndIsAbsent(@Param("studentId") Long studentId,@Param("isAbsent") Boolean isAbsent);

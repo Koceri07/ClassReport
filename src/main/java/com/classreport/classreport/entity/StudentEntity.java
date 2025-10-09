@@ -33,7 +33,7 @@ public class StudentEntity extends UserEntity{
     private String parentInvadeCode;
 
     @ManyToMany
-    private List<ParentEntity> parent;
+    private List<ParentEntity> parents;
 
 
     private boolean isTransfer;

@@ -1,9 +1,12 @@
 package com.classreport.classreport.controller;
 
 import com.classreport.classreport.model.request.TeacherRequest;
+import com.classreport.classreport.model.request.UserRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.TeacherService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +19,16 @@ public class TeacherController {
     @PostMapping
     public void create(@RequestBody TeacherRequest teacherRequest){
         teacherService.createTeacher(teacherRequest);
+    }
+
+    @PostMapping("/create-by-user/id/{id}")
+    public ApiResponse createByUserRequest(@RequestBody UserRequest userRequest, @PathVariable Long id){
+        return teacherService.createTeacherByUserRequest(userRequest, id);
+    }
+
+    @GetMapping("/get-id/token")
+    public ApiResponse getIdFromToken(UserDetails userDetails) {
+        return teacherService.getTeacherIdFromTokenApi(userDetails);
     }
 
     @GetMapping("/{id}")

@@ -24,4 +24,7 @@ public class UserResponse {
     private boolean isActive;
 
     private String email;
+
+    private Long specificEntityId;
+
 }

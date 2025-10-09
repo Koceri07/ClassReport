@@ -2,6 +2,7 @@ package com.classreport.classreport.mapper;
 
 import com.classreport.classreport.entity.ParentEntity;
 import com.classreport.classreport.model.request.ParentRequest;
+import com.classreport.classreport.model.request.UserRequest;
 import com.classreport.classreport.model.response.ParentResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -58,6 +59,23 @@ public class ParentMapper {
         parentEntity.setActive(request.isActive());
 
         return parentEntity;
+    }
+
+    public ParentResponse userRequestToParentResponse(UserRequest request){
+        if (request == null){
+            return null;
+        }
+
+        ParentResponse response = new ParentResponse();
+
+        response.setName(request.getName());
+        response.setSurname(request.getSurname());
+        response.setEmail(request.getEmail());
+        response.setId(request.getId());
+        response.setActive(request.isActive());
+        response.setRole(request.getRole());
+
+        return response;
     }
 }
 

@@ -17,4 +17,11 @@ public interface TeacherRepository extends JpaRepository<TeacherEntity,Long> {
     @Modifying
     @Query(value = " UPDATE users u SET u.is_active = false WHERE u.id =:id;", nativeQuery = true)
     void softDelete(@Param("id") Long id);
+
+    TeacherEntity findTeacherEntityById(Long id);
+
+    TeacherEntity findByEmail(String email);
+
+    boolean existsByEmail(String email);
+
 }

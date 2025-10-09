@@ -2,6 +2,7 @@ package com.classreport.classreport.service;
 
 import com.classreport.classreport.entity.GroupEntity;
 import com.classreport.classreport.entity.LessonScheduleEntity;
+import com.classreport.classreport.entity.TeacherEntity;
 import com.classreport.classreport.mapper.GroupMapper;
 import com.classreport.classreport.model.exception.NotFoundException;
 import com.classreport.classreport.model.request.GroupRequest;
@@ -9,8 +10,11 @@ import com.classreport.classreport.model.request.StudentRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.repository.GroupRepository;
 import com.classreport.classreport.repository.LessonScheduleRepository;
+import com.classreport.classreport.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,9 +25,11 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final LessonScheduleRepository lessonScheduleRepository;
+    private final TeacherService teacherService;
+    private final TeacherRepository teacherRepository;
 
     @Transactional
-    public void createGroup(GroupRequest groupRequest){
+    public void createGroup(GroupRequest groupRequest, @AuthenticationPrincipal UserDetails userDetails){
         System.out.println("DEBUG LESSON SCHEDULE: " + groupRequest.getLessonSchedule());
 
         log.info("Action.createGroup.start for id {}", groupRequest.getId());
@@ -31,6 +37,11 @@ public class GroupService {
         // GroupEntity sadə şəkildə convert olunur (lessonSchedule hələ yoxdu)
         GroupEntity groupEntity = GroupMapper.INSTANCE.requestToEntity(groupRequest);
         groupEntity.setActive(true);
+
+        Long teacherId = teacherService.getTeacherIdFromToken(userDetails);
+        TeacherEntity teacher = teacherRepository.findTeacherEntityById(teacherId);
+
+        groupEntity.setTeacher(teacher);
 
         // LessonSchedule əl ilə yaradılır və əlaqələr qurulur
         LessonScheduleEntity lessonSchedule = new LessonScheduleEntity();

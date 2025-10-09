@@ -9,5 +9,6 @@ public class AttendanceUpdateRequest {
     private Boolean present;
     private String lateTime;
     private String note;
+    private Long groupId;
 }
 

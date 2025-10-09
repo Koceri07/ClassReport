@@ -35,6 +35,11 @@ public class StudentService {
 
 
         var student = StudentMapper.INSTANCE.requestToEntity(studentRequest);
+
+        if (student.getGroups() == null){
+            student.setGroups(new ArrayList<>());
+        }
+
         AttendanceEntity attendanceEntity = new AttendanceEntity();
         attendanceEntity.setStudent(student);
         attendanceRepository.save(attendanceEntity);
@@ -42,7 +47,7 @@ public class StudentService {
         student.setTransfer(false);
         student.setRole(Role.STUDENT);
         student.setParentInvadeCode(UUID.randomUUID().toString().substring(0, 8));
-        studentRepository.save(student);
+
 
         var group = groupRepository.findById(studentRequest.getGroupId())
                         .orElseThrow(() -> new NotFoundException("Group Id Not Found"));
@@ -50,6 +55,7 @@ public class StudentService {
         student.getGroups().add(group);
         group.getStudents().add(student);
         groupRepository.save(group);
+        studentRepository.save(student);
         log.info("Student Group id {}", studentRequest.getGroupId());
         log.info("Action.createStudent.end for id {}", studentRequest.getId());
     }

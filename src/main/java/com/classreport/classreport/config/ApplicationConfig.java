@@ -1,6 +1,8 @@
 package com.classreport.classreport.config;
 
-import com.classreport.classreport.repository.UserRepository;
+import com.classreport.classreport.repository.ParentRepository;
+import com.classreport.classreport.repository.StudentRepository;
+import com.classreport.classreport.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,12 +19,31 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UserRepository userRepository;
+    private final ParentRepository parentRepository;
+    private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return username -> {
+            // Bütün user növlərində axtar
+            var teacher = teacherRepository.findByEmail(username);
+            if (teacher != null) {
+                return teacher;
+            }
+
+            var student = studentRepository.findByEmail(username);
+            if (student != null) {
+                return student;
+            }
+
+            var parent = parentRepository.findByEmail(username);
+            if (parent != null) {
+                return parent;
+            }
+
+            throw new UsernameNotFoundException("User not found");
+        };
     }
 
     @Bean
@@ -37,6 +58,7 @@ public class ApplicationConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

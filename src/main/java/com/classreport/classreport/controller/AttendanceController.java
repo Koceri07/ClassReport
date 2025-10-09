@@ -15,7 +15,7 @@ public class AttendanceController {
 
     private final AttendanceService attendanceService;
 
-    @PostMapping
+    @PostMapping("/add")
     public void create(@RequestBody AttendanceRequest request){
         attendanceService.createAttendance(request);
     }
@@ -28,6 +28,11 @@ public class AttendanceController {
     @GetMapping("/get-all")
     public ApiResponse getAll(){
         return attendanceService.getAllAttendance();
+    }
+
+    @GetMapping("/by-group/{groupId}")
+    public ApiResponse getByGroup(@PathVariable Long groupId) {
+        return attendanceService.getAttendancesByGroupId(groupId);
     }
 
     @GetMapping("/student/{studentId}")

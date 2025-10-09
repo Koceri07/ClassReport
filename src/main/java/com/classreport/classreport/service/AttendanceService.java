@@ -1,6 +1,7 @@
 package com.classreport.classreport.service;
 
 import com.classreport.classreport.entity.AttendanceEntity;
+import com.classreport.classreport.entity.GroupEntity;
 import com.classreport.classreport.entity.LessonInstanceEntity;
 import com.classreport.classreport.entity.StudentEntity;
 import com.classreport.classreport.mapper.AttendanceMapper;
@@ -8,18 +9,25 @@ import com.classreport.classreport.model.exception.NotFoundException;
 import com.classreport.classreport.model.request.AttendanceRequest;
 import com.classreport.classreport.model.request.AttendanceUpdateRequest;
 import com.classreport.classreport.model.response.ApiResponse;
+import com.classreport.classreport.model.response.AttendanceResponse;
 import com.classreport.classreport.model.response.StudentAttendancesStatsResponse;
 import com.classreport.classreport.repository.AttendanceRepository;
 import com.classreport.classreport.repository.LessonInstanceRepository;
 import com.classreport.classreport.repository.StudentAttendancesStatsRepository;
 import com.classreport.classreport.repository.StudentRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -30,6 +38,7 @@ public class AttendanceService {
     private final StudentRepository studentRepository;
     private final LessonInstanceRepository lessonInstanceRepository;
     private final StudentAttendancesStatsRepository attendancesStatsRepository;
+    private final AuthenticationManager authenticationManager;
 
     public void createAttendance(AttendanceRequest request){
         log.info("Action.createAttendance.start for id {}", request.getId());
@@ -71,6 +80,18 @@ public class AttendanceService {
 
         log.info("Action.getByStudentId.end for student id {}", studentId);
         return apiResponse;
+    }
+
+    public ApiResponse getAttendancesByGroupId(Long groupId){
+        try {
+            List<AttendanceEntity> attendances = attendanceRepository.findByGroupId(groupId);
+            List<AttendanceResponse> response = attendances.stream()
+                    .map(AttendanceMapper.INSTANCE::entityToResponse)
+                    .collect(Collectors.toList());
+            return new ApiResponse(response);
+        } catch (Exception e) {
+            return new ApiResponse("Error fetching attendances: " + e.getMessage());
+        }
     }
 
     public ApiResponse getAbsentStudentAttendancesByStudentId(Long studentId){
@@ -168,10 +189,29 @@ public class AttendanceService {
         StudentEntity student = studentRepository.findById(request.getStudentId())
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
-        LessonInstanceEntity lessonInstance = (LessonInstanceEntity) lessonInstanceRepository.findByDate(LocalDate.parse(request.getDate()))
-                .orElseThrow(() -> new NotFoundException("LessonInstance not found"));
+        LocalDate attendanceDate = LocalDate.parse(request.getDate());
 
-        AttendanceEntity attendance = (AttendanceEntity) attendanceRepository.findByStudentAndLessonInstance(student, lessonInstance)
+        // Frontend-dən gələn groupId-ni istifadə edirik
+        Long groupId = request.getGroupId();
+
+        // findAllByDateAndGroupId istifadə edək ki, çoxlu nəticə olsa da problem yaranmasın
+        List<LessonInstanceEntity> lessonInstances = lessonInstanceRepository
+                .findAllByDateAndGroupId(attendanceDate, groupId);
+
+        if (lessonInstances.isEmpty()) {
+            throw new NotFoundException("LessonInstance not found for date " + request.getDate() + " and group " + groupId);
+        }
+
+        // Birinci tapılan LessonInstance-i istifadə edirik
+        LessonInstanceEntity lessonInstance = lessonInstances.get(0);
+
+        // Əgər birdən çox LessonInstance varsa, log yazaq
+        if (lessonInstances.size() > 1) {
+            log.warn("Found {} LessonInstances for date {} and group {}. Using the first one.",
+                    lessonInstances.size(), attendanceDate, groupId);
+        }
+
+        AttendanceEntity attendance = attendanceRepository.findByStudentAndLessonInstance(student, lessonInstance)
                 .orElseGet(() -> {
                     AttendanceEntity newAttendance = new AttendanceEntity();
                     newAttendance.setStudent(student);
@@ -185,7 +225,6 @@ public class AttendanceService {
         attendance.setNote(request.getNote());
 
         attendanceRepository.save(attendance);
-
     }
 
     public void hardDeleteById(Long id){
@@ -198,5 +237,24 @@ public class AttendanceService {
         log.info("Action.softDeleteById.start for id {}", id);
         attendanceRepository.softDelete(id);
         log.info("Action.softDeleteById.end for id {}", id);
+    }
+
+
+    // AuthService-ə əlavə edin
+    @PostConstruct
+    public void testAuthentication() {
+        try {
+            log.info("Testing authentication manager...");
+            // Test üçün mövcud userin məlumatlarını istifadə edin
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            "koceri@mail", // test email
+                            "123456"  // test şifrə
+                    )
+            );
+            log.info("Authentication manager test: SUCCESS");
+        } catch (Exception e) {
+            log.error("Authentication manager test: FAILED - {}", e.getMessage());
+        }
     }
 }

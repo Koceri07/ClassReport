@@ -37,4 +37,8 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
     @Query("SELECT g.id FROM StudentEntity s JOIN s.groups g WHERE s.id = :studentId")
     List<Long> findGroupIdsByStudentId(@Param("studentId") Long studentId);
 
+    StudentEntity findByEmail(String email);
+
+    boolean existsByEmail(String email);
+
 }

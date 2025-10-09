@@ -26,6 +26,7 @@ public class AttendanceEntity {
     private String lateTime;
     private String note;
     private Boolean isTemporaryTransfer;
+    private Long groupId;
 
     @ManyToOne
     @JoinColumn(name = "student_id")

@@ -30,6 +30,10 @@ public interface LessonInstanceRepository extends JpaRepository<LessonInstanceEn
     @Query(value = "SELECT * FROM lesson_instances WHERE group_id = :groupId", nativeQuery = true)
     List<LessonInstanceEntity> findByGroupId(Long groupId);
 
+    Optional<LessonInstanceEntity> findByDateAndGroupId(LocalDate date, Long groupId);
+
+    List<LessonInstanceEntity> findAllByDateAndGroupId(LocalDate date, Long groupId);
+
 
     boolean existsByGroupAndDateAndIsExtraTrue(GroupEntity group, LocalDate date);
 

@@ -5,6 +5,7 @@ import com.classreport.classreport.entity.TeacherEntity;
 import com.classreport.classreport.mapper.StudentMapper;
 import com.classreport.classreport.model.request.StudentRequest;
 import com.classreport.classreport.model.request.TeacherRequest;
+import com.classreport.classreport.model.request.UserRequest;
 import com.classreport.classreport.model.response.StudentResponse;
 import com.classreport.classreport.model.response.TeacherResponse;
 import lombok.RequiredArgsConstructor;
@@ -98,6 +99,40 @@ public class TeacherMapper {
         } else {
             response.setStudents(null);
         }
+
+        return response;
+    }
+
+    public TeacherResponse requestToResponse(TeacherRequest request){
+        if (request == null){
+            return null;
+        }
+
+        TeacherResponse response = new TeacherResponse();
+
+        response.setName(request.getName());
+        response.setSurname(request.getSurname());
+        response.setActive(request.isActive());
+        response.setEmail(request.getEmail());
+        response.setId(request.getId());
+        response.setRole(request.getRole());
+
+        return response;
+    }
+
+    public TeacherResponse userRequestToResponse(UserRequest request){
+        if (request == null){
+            return null;
+        }
+
+        TeacherResponse response = new TeacherResponse();
+
+        response.setName(request.getName());
+        response.setSurname(request.getSurname());
+        response.setActive(request.isActive());
+        response.setEmail(request.getEmail());
+        response.setId(request.getId());
+        response.setRole(request.getRole());
 
         return response;
     }

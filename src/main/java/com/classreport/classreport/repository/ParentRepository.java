@@ -10,4 +10,8 @@ import java.util.List;
 public interface ParentRepository extends JpaRepository<ParentEntity, Long> {
 
     List<ParentEntity> findAll();
+
+    ParentEntity findByEmail(String email);
+
+    boolean existsByEmail(String email);
 }

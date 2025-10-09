@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import net.bytebuddy.implementation.bind.annotation.SuperCall;
+//import net.bytebuddy.implementation.bind.annotation.SuperCall;
 
 import java.util.List;
 
@@ -18,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StudentRequest extends UserRequest{
-
 
     private Long groupId;
 

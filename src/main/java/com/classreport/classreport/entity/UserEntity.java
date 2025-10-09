@@ -32,8 +32,20 @@ public class UserEntity implements UserDetails {
 
     private String email;
 
+    private String token;
+
     private boolean isActive;
 
+
+//    // Əlaqələr - Lazy loading ilə
+//    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private TeacherEntity teacher;
+//
+//    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private StudentEntity student;
+//
+//    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private ParentEntity parent;
 
 
     @Override

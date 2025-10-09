@@ -1,11 +1,13 @@
 package com.classreport.classreport.service;
 
+import com.classreport.classreport.entity.ParentEntity;
 import com.classreport.classreport.entity.StudentEntity;
 import com.classreport.classreport.mapper.ParentMapper;
 import com.classreport.classreport.mapper.StudentMapper;
 import com.classreport.classreport.model.enums.Role;
 import com.classreport.classreport.model.exception.NotFoundException;
 import com.classreport.classreport.model.request.ParentRequest;
+import com.classreport.classreport.model.request.UserRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.repository.ParentRepository;
 import com.classreport.classreport.repository.StudentRepository;
@@ -33,6 +35,25 @@ public class ParentService {
 
         ApiResponse apiResponse = new ApiResponse("success");
         log.info("Action.createParent.end for id {}", request.getId());
+        return apiResponse;
+    }
+
+    public ApiResponse createByUserRequest(UserRequest userRequest, Long id){
+        log.info("Action.createByUserRequest.start for id {}", userRequest.getId());
+        var parent = new ParentEntity();
+
+        parent.setName(userRequest.getName());
+        parent.setSurname(userRequest.getSurname());
+        parent.setId(userRequest.getId());
+        parent.setEmail(userRequest.getEmail());
+        parent.setActive(true);
+        parent.setPassword(userRequest.getPassword());
+        parent.setRole(Role.PARENT);
+
+        parentRepository.save(parent);
+
+        ApiResponse apiResponse = new ApiResponse("success");
+        log.info("Action.createByUserRequest.end for id {}", userRequest.getId());
         return apiResponse;
     }
 

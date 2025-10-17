@@ -3,12 +3,14 @@ package com.classreport.classreport.controller;
 import com.classreport.classreport.model.request.ExamRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.ExamService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/exams")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class ExamController {
 
     private final ExamService examService;

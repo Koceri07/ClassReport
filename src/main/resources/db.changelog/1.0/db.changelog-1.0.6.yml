@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-parents-table
+      author: Koceri07
+      changes:
+        - createTable:
+            tableName: parent_entity
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    foreignKeyName: fk_parents_user
+                    references: users(id)

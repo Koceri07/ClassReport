@@ -3,6 +3,7 @@ package com.classreport.classreport.controller;
 import com.classreport.classreport.model.request.GroupRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.GroupService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/groups")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class GroupController {
 
     private final GroupService groupService;

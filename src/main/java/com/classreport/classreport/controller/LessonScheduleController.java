@@ -3,6 +3,7 @@ package com.classreport.classreport.controller;
 import com.classreport.classreport.model.request.LessonScheduleRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.LessonScheduleService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.PushBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/schedules")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class LessonScheduleController {
 
     private final LessonScheduleService lessonScheduleService;

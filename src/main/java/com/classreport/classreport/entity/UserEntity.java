@@ -2,6 +2,7 @@ package com.classreport.classreport.entity;
 
 import com.classreport.classreport.model.enums.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,28 +25,21 @@ public class UserEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String name;
+    @NotNull
     private String surname;
+    @NotNull
     private String password;
+
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
+    @NotNull
     private String email;
 
-    private String token;
-
+    @NotNull
     private boolean isActive;
-
-
-//    // Əlaqələr - Lazy loading ilə
-//    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private TeacherEntity teacher;
-//
-//    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private StudentEntity student;
-//
-//    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private ParentEntity parent;
 
 
     @Override

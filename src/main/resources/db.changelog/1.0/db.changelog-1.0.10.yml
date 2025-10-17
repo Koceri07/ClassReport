@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-exams-table
+      author: Koceri07
+      changes:
+        - createTable:
+            tableName: exams
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: point
+                  type: bigint
+              - column:
+                  name: exam_name
+                  type: varchar(255)
+              - column:
+                  name: exam_date
+                  type: date
+              - column:
+                  name: student_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_exams_student
+                    references: students(id)

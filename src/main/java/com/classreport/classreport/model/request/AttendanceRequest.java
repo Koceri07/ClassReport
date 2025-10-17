@@ -1,8 +1,6 @@
 package com.classreport.classreport.model.request;
 
-import com.classreport.classreport.entity.LessonInstanceEntity;
-import com.classreport.classreport.entity.StudentEntity;
-import com.classreport.classreport.entity.TeacherEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

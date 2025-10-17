@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,7 +23,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final com.classreport.classreport.security.JwtAuthFilter jwtAuthFilter;
+    private final com.classreport.classreport.filter.JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
@@ -33,24 +34,30 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/v1/auth/**",
+                                "/auth/**",
+                                "v1/auth/get/access-token",
                                 "/swagger-ui/**",
+                                "/swagger-ui.html",
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**",
                                 "/webjars/**",
-                                "/static/**",  // Static fayllar üçün
-                                "/*.html",     // HTML faylları
-                                "/*.css",      // CSS faylları
-                                "/*.js"        // JS faylları
+                                "/static/**",
+                                "/*.html",
+                                "/*.css",
+                                "/*.js"
                         ).permitAll()
-                        .requestMatchers("/v1/teachers/**").hasAnyAuthority("TEACHER", "ADMIN")
-                        .requestMatchers("/v1/parents/**").hasAnyAuthority("PARENT", "ADMIN")
-                        .requestMatchers("/v1/students/**").hasAnyAuthority("STUDENT", "TEACHER", "ADMIN")
-                        .requestMatchers("/v1/groups/**").hasAnyAuthority("TEACHER", "ADMIN")
-                        .requestMatchers("/v1/attendances/**").hasAnyAuthority("TEACHER", "ADMIN")
-                        .requestMatchers("/v1/lessons/**").hasAnyAuthority("TEACHER", "ADMIN")
-                        .requestMatchers("/v1/exams/**").hasAnyAuthority("TEACHER", "ADMIN")
-                        .requestMatchers("/v1/reports/**").hasAnyAuthority("TEACHER", "ADMIN")
-                        .requestMatchers("/v1/transfers/**").hasAnyAuthority("ADMIN")
+                        // ✅ DÜZƏLDİ: ROLE_ prefixi əlavə et
+//                        .requestMatchers("/v1/auth/**").permitAll()
+                        .requestMatchers("/v1/teachers/**").hasAnyAuthority("ROLE_TEACHER", "ROLE_ADMIN")
+                        .requestMatchers("/v1/parents/**").hasAnyAuthority("ROLE_PARENT", "ROLE_ADMIN")
+                        .requestMatchers("/v1/students/**").hasAnyAuthority("ROLE_STUDENT", "ROLE_TEACHER", "ROLE_ADMIN", "ROLE_PARENT")
+                        // ✅ BURASI ƏSAS PROBLEM: ROLE_TEACHER əlavə et
+                        .requestMatchers("/v1/groups/**").hasAnyAuthority("ROLE_TEACHER", "ROLE_ADMIN", "ROLE_PARENT")
+                        .requestMatchers("/v1/attendances/**").hasAnyAuthority("ROLE_TEACHER", "ROLE_ADMIN", "ROLE_PARENT")
+                        .requestMatchers("/v1/lessons/**").hasAnyAuthority("ROLE_TEACHER", "ROLE_ADMIN")
+                        .requestMatchers("/v1/exams/**").hasAnyAuthority("ROLE_TEACHER", "ROLE_ADMIN", "ROLE_PARENT")
+                        .requestMatchers("/v1/reports/**").hasAnyAuthority("ROLE_TEACHER", "ROLE_ADMIN", "ROLE_PARENT")
+                        .requestMatchers("/v1/transfers/**").hasAnyAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -66,8 +73,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
-                "http://127.0.0.1:5500", // ƏSAS - Live Server default portu
-                "http://localhost:5500",  // ƏSAS
+                "http://127.0.0.1:5500",
+                "http://localhost:5500",
                 "http://localhost",
                 "http://127.0.0.1",
                 "http://localhost:9999",

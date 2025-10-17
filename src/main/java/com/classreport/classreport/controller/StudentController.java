@@ -3,6 +3,7 @@ package com.classreport.classreport.controller;
 import com.classreport.classreport.model.request.StudentRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.StudentService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v1/students")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class StudentController {
 
     private final StudentService studentService;

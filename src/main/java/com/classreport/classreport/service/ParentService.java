@@ -62,7 +62,7 @@ public class ParentService {
         StudentEntity studentEntity = studentRepository.findByParentInvadeCodeAndActiveTrue(studentCode);
 
 //        var parent = parentRepository.findById(parentId)
-        var parent = parentRepository.findById(14L)
+        var parent = parentRepository.findById(parentId)
 
                 .orElseThrow(() -> new NotFoundException("Parent Id Not Found"));
 

@@ -1,0 +1,73 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-students-table
+      author: Koceri07
+      changes:
+        - createTable:
+            tableName: students
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    foreignKeyName: fk_students_user
+                    references: users(id)
+              - column:
+                  name: parent_invade_code
+                  type: varchar(255)
+              - column:
+                  name: is_transfer
+                  type: boolean
+                  defaultValue: false
+
+  - changeSet:
+      id: create-student-group-relation
+      author: your_name
+      changes:
+        - createTable:
+            tableName: student_group
+            columns:
+              - column:
+                  name: student_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_sg_student
+                    references: students(id)
+              - column:
+                  name: group_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_sg_group
+                    references: groups(id)
+        - addPrimaryKey:
+            tableName: student_group
+            columnNames: student_id, group_id
+
+  - changeSet:
+      id: create-student-parents-relation
+      author: your_name
+      changes:
+        - createTable:
+            tableName: student_parents
+            columns:
+              - column:
+                  name: student_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_sp_student
+                    references: students(id)
+              - column:
+                  name: parent_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_sp_parent
+                    references: parents(id)
+        - addPrimaryKey:
+            tableName: student_parents
+            columnNames: student_id, parent_id

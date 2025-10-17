@@ -4,10 +4,11 @@ import com.classreport.classreport.entity.ParentEntity;
 import com.classreport.classreport.entity.StudentEntity;
 import com.classreport.classreport.entity.TeacherEntity;
 import com.classreport.classreport.entity.UserEntity;
-import com.classreport.classreport.mapper.UserMapper;
 import com.classreport.classreport.model.enums.Role;
+import com.classreport.classreport.model.request.RefreshTokenRequest;
 import com.classreport.classreport.model.request.UserRequest;
 import com.classreport.classreport.model.response.ApiResponse;
+import com.classreport.classreport.model.response.AuthResponse;
 import com.classreport.classreport.model.response.UserResponse;
 import com.classreport.classreport.repository.ParentRepository;
 import com.classreport.classreport.repository.StudentRepository;
@@ -16,8 +17,6 @@ import com.classreport.classreport.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -120,23 +120,33 @@ public class AuthService {
             // Token yarat
             String jwtToken = jwtService.generateToken(user);
 
-            // Response hazırla (constructor ilə)
-            UserResponse userResponse = new UserResponse();
-            userResponse.setId(user.getId());
-            userResponse.setName(user.getName());
-            userResponse.setSurname(user.getSurname());
-            userResponse.setEmail(user.getEmail());
-            userResponse.setRole(user.getRole());
-            userResponse.setActive(user.isActive());
-            userResponse.setToken(jwtToken);
+            // ✅ DÜZ DATA FORMATI
+            Map<String, Object> responseData = new HashMap<>();
+            responseData.put("token", jwtToken);
+            responseData.put("id", user.getId());
+            responseData.put("name", user.getName());
+            responseData.put("surname", user.getSurname());
+            responseData.put("email", user.getEmail());
+            responseData.put("role", user.getRole().name());
+            responseData.put("active", user.isActive());
 
-            log.info("Action.register.end for id {}", request.getId());
-            return new ApiResponse("200");
+            log.info("Action.register.end for email {}", request.getEmail());
+
+            // ✅ DÜZ API RESPONSE
+            ApiResponse response = new ApiResponse();
+            response.setCode("200");
+            response.setMessage("Successfully registered");
+            response.setData(responseData);
+
+            return response;
 
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("Action.register.end for id {}", request.getId());
-            return new ApiResponse("500");
+            log.error("Action.register.end for email {}", request.getEmail());
+            ApiResponse response = new ApiResponse();
+            response.setCode("500");
+            response.setMessage("Registration error: " + e.getMessage());
+            return response;
         }
     }
 
@@ -150,45 +160,49 @@ public class AuthService {
                 return new ApiResponse("400");
             }
 
-            if (request.getPassword().trim().isEmpty()) {
-                log.error("Password is empty");
-                return new ApiResponse("400");
-            }
-
-//             Userı tap - bütün user növlərində axtar
+            // Userı tap
             UserEntity user = findUserByEmail(request.getEmail());
 
-//            UserEntity user = new UserEntity();
             if (user == null) {
                 log.error("User not found with email: {}", request.getEmail());
                 return new ApiResponse("404");
             }
 
-            // Şifrəni özümüz yoxlayaq
+            // Şifrəni yoxla
             if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
                 log.error("Invalid password for email: {}", request.getEmail());
                 return new ApiResponse("401");
             }
 
-            // Token yarat
+            // ✅ REAL JWT TOKEN YARAD
             String jwtToken = jwtService.generateToken(user);
 
-            // Response hazırla
-            UserResponse userResponse = new UserResponse();
-            userResponse.setId(user.getId());
-            userResponse.setName(user.getName());
-            userResponse.setSurname(user.getSurname());
-            userResponse.setEmail(user.getEmail());
-            userResponse.setRole(user.getRole());
-            userResponse.setActive(user.isActive());
-            userResponse.setToken(jwtToken);
+            // ✅ DÜZ DATA FORMATI
+            Map<String, Object> responseData = new HashMap<>();
+            responseData.put("token", jwtToken);
+            responseData.put("id", user.getId());
+            responseData.put("name", user.getName());
+            responseData.put("surname", user.getSurname());
+            responseData.put("email", user.getEmail());
+            responseData.put("role", user.getRole().name());
+            responseData.put("active", user.isActive());
 
             log.info("Action.login.success for email {}", request.getEmail());
-            return new ApiResponse(userResponse);
+
+            // ✅ ApiResponse yarat
+            ApiResponse response = new ApiResponse();
+            response.setCode("200");
+            response.setMessage("Successfully logged in");
+            response.setData(responseData); // ✅ Map set et
+
+            return response;
 
         } catch (Exception e) {
             log.error("Action.login.error for email {}: {}", request.getEmail(), e.getMessage());
-            return new ApiResponse("500");
+            ApiResponse response = new ApiResponse();
+            response.setCode("500");
+            response.setMessage("Login error: " + e.getMessage());
+            return response;
         }
     }
 
@@ -231,7 +245,7 @@ public class AuthService {
                     userResponse.setEmail(user.getEmail());
                     userResponse.setRole(user.getRole());
                     userResponse.setActive(user.isActive());
-                    userResponse.setToken(newToken);
+                    userResponse.setAccessToken(newToken);
 
                     return new ApiResponse(userResponse);
                 }
@@ -281,6 +295,41 @@ public class AuthService {
 
         } catch (Exception e) {
             return new ApiResponse("500");
+        }
+    }
+
+
+    public AuthResponse createTokensForUser(String email) {
+        UserEntity userEntity = userRepository.findSimpleByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String token = jwtService.generateToken(userEntity);
+        String refreshToken = jwtService.generateRefreshToken(userEntity);
+
+        return new AuthResponse(token, refreshToken);
+    }
+
+
+
+    public AuthResponse refreshToken(RefreshTokenRequest request) {
+        try {
+            String refreshToken = request.getRefreshToken();
+
+            if (!jwtService.isRefreshTokenValid(refreshToken)) {
+                throw new RuntimeException("Invalid or expired refresh token");
+            }
+
+            String email = jwtService.extractUsername(refreshToken);
+            UserEntity user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            String accessToken = jwtService.generateToken(user);
+            String newRefreshToken = jwtService.generateRefreshToken(user);
+
+            return new AuthResponse(accessToken, newRefreshToken);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Token refresh failed: " + e.getMessage());
         }
     }
 }

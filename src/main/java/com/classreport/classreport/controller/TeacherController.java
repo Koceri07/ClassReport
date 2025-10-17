@@ -4,6 +4,7 @@ import com.classreport.classreport.model.request.TeacherRequest;
 import com.classreport.classreport.model.request.UserRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.TeacherService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/teachers")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class TeacherController {
 
     private final TeacherService teacherService;

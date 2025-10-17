@@ -3,12 +3,14 @@ package com.classreport.classreport.controller;
 import com.classreport.classreport.model.request.UserRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/users")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
     private final UserService userService;

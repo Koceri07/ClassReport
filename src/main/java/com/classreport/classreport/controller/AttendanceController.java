@@ -4,6 +4,7 @@ import com.classreport.classreport.model.request.AttendanceRequest;
 import com.classreport.classreport.model.request.AttendanceUpdateRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.AttendanceService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/attendances")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class AttendanceController {
 
     private final AttendanceService attendanceService;

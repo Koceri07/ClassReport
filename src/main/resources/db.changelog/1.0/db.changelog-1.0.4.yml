@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-student-attendances-stats-table
+      author: Koceri07
+      changes:
+        - createTable:
+            tableName: student_attendances_stats_entity
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: student_id
+                  type: bigint
+              - column:
+                  name: full_name
+                  type: varchar(255)
+              - column:
+                  name: total_lessons
+                  type: bigint
+              - column:
+                  name: attended_lessons
+                  type: bigint
+              - column:
+                  name: absent_lessons
+                  type: bigint

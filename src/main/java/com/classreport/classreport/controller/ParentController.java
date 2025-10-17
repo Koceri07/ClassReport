@@ -3,13 +3,14 @@ package com.classreport.classreport.controller;
 import com.classreport.classreport.model.request.ParentRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.ParentService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/parents")
 @RequiredArgsConstructor
-
+@SecurityRequirement(name = "bearerAuth")
 public class ParentController {
 
     private final ParentService parentService;
@@ -20,8 +21,8 @@ public class ParentController {
     }
 
     @PatchMapping("/link-student/id/{parentId}")
-    public ApiResponse linkStudent(@RequestBody String studentCode, @PathVariable Long parentId){
-        return parentService.linkStudent(studentCode,parentId);
+    public ApiResponse linkStudent(@RequestParam String invadeCode, @PathVariable Long parentId){
+        return parentService.linkStudent(invadeCode,parentId);
     }
 
     @GetMapping("/id/{id}")

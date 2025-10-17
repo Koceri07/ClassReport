@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'groovy'
     id 'org.springframework.boot' version '3.5.3'
     id 'io.spring.dependency-management' version '1.1.7'
 }
@@ -28,12 +29,20 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    // https://mvnrepository.com/artifact/org.postgresql/postgresql
+
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+
     implementation 'org.postgresql:postgresql:42.7.3'
-//    implementation 'net.bytebuddy:byte-buddy:1.14.6'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
+
+    implementation 'org.liquibase:liquibase-core'
+
+    // Swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4'
+    implementation 'org.springdoc:springdoc-openapi-starter-common:2.8.4'
 
     //JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
@@ -44,12 +53,22 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
-
+    // TEST DEPENDENCIES - YENİLƏNİB
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Groovy və Spock dependencies - SADƏLƏŞDİRİLİB
+//    testImplementation 'org.apache.groovy:groovy:4.0.6'
+    testImplementation 'org.spockframework:spock-core:2.3-groovy-4.0'
+    testImplementation 'org.spockframework:spock-spring:2.3-groovy-4.0'
+
+    // MapStruct test üçün
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 }
 
 tasks.named('test') {
+
     useJUnitPlatform()
+
 }

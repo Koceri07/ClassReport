@@ -1,10 +1,12 @@
 package com.classreport.classreport.service;
 
+import com.classreport.classreport.entity.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@Slf4j
 public class JwtService {
 
     @Value("${application.security.jwt.secret-key}")
@@ -27,14 +30,18 @@ public class JwtService {
     @Value("${application.security.jwt.refresh-token.expiration}")
     private long refreshExpiration;
 
-    // Secret keyi cache etmək üçün
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return Jwts.parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -42,7 +49,6 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    // Bütün claims-ləri extract et
     private Claims extractAllClaims(String token) {
         try {
             return Jwts
@@ -56,21 +62,67 @@ public class JwtService {
         }
     }
 
-    // Access token yaratmaq
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    // ✅ DÜZƏLDİLDİ: YALNIZ BİR generateToken METODU OLSUN
+    public String generateToken(UserEntity user) {
+        try {
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("role", user.getRole().name());
+            claims.put("userId", user.getId());
+            claims.put("email", user.getEmail());
+
+            return Jwts.builder()
+                    .setClaims(claims)
+                    .setSubject(user.getEmail())
+                    .setIssuedAt(new Date(System.currentTimeMillis()))
+                    .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                    .signWith(getSignInKey(), SignatureAlgorithm.HS256) // ✅ COMMENT SİLİNDİ
+                    .compact();
+
+        } catch (Exception e) {
+            log.error("Token generation error: {}", e.getMessage());
+            throw new RuntimeException("Token generation failed");
+        }
+    }
+    // Refresh Token yaratmaq
+    public String generateRefreshToken(UserEntity user) {
+        try {
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("tokenType", "refresh");
+            claims.put("userId", user.getId());
+            claims.put("email", user.getEmail());
+
+            return Jwts.builder()
+                    .setClaims(claims)
+                    .setSubject(user.getEmail())
+                    .setIssuedAt(new Date(System.currentTimeMillis()))
+                    .setExpiration(new Date(System.currentTimeMillis() + refreshExpiration))
+                    .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                    .compact();
+
+        } catch (Exception e) {
+            log.error("Refresh token generation error: {}", e.getMessage());
+            throw new RuntimeException("Refresh token generation failed");
+        }
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, jwtExpiration);
+    // Refresh Tokeni validate etmək
+    public boolean isRefreshTokenValid(String token) {
+        try {
+            if (!validateToken(token)) {
+                return false;
+            }
+
+            final Claims claims = extractAllClaims(token);
+            String tokenType = claims.get("tokenType", String.class);
+            return "refresh".equals(tokenType);
+
+        } catch (Exception e) {
+            log.error("Refresh token validation error: {}", e.getMessage());
+            return false;
+        }
     }
 
-    // Refresh token yaratmaq
-    public String generateRefreshToken(UserDetails userDetails) {
-        return buildToken(new HashMap<>(), userDetails, refreshExpiration);
-    }
 
-    // Token qurmaq (ümumi metod)
     private String buildToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails,
@@ -90,7 +142,6 @@ public class JwtService {
         }
     }
 
-    // Tokenin etibarlı olub olmadığını yoxlamaq
     public boolean isTokenValid(String token, UserDetails userDetails) {
         try {
             final String username = extractUsername(token);
@@ -100,29 +151,24 @@ public class JwtService {
         }
     }
 
-    // Tokenin müddətinin bitib-bitmədiyini yoxlamaq
     private boolean isTokenExpired(String token) {
         try {
             return extractExpiration(token).before(new Date());
         } catch (Exception e) {
-            return true; // Əgər xəta baş verərsə, tokeni expired say
+            return true;
         }
     }
 
-    // Tokenin expiration tarixini almaq
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    // Tokendən userId almaq (əlavə edilmiş claim əsasında)
     public Long extractUserId(String token) {
         try {
             final Claims claims = extractAllClaims(token);
-            // Əgər tokenə userId əlavə edilibsə
             if (claims.containsKey("userId")) {
                 return claims.get("userId", Long.class);
             }
-            // Əgər userId claimi yoxdursa, subject-dən çalışaq (əgər subject userId-dirsə)
             try {
                 return Long.parseLong(claims.getSubject());
             } catch (NumberFormatException e) {
@@ -133,7 +179,6 @@ public class JwtService {
         }
     }
 
-    // Tokendən role almaq
     public String extractRole(String token) {
         try {
             final Claims claims = extractAllClaims(token);
@@ -146,7 +191,6 @@ public class JwtService {
         }
     }
 
-    // Tokenin qalan müddətini almaq (millisaniyələrlə)
     public long getRemainingTime(String token) {
         try {
             final Date expiration = extractExpiration(token);
@@ -157,17 +201,15 @@ public class JwtService {
         }
     }
 
-    // Tokeni validate etmək (xəta atmayan versiya)
     public boolean validateToken(String token) {
         try {
-            extractAllClaims(token); // Əgər xəta atmasa, token validdir
+            extractAllClaims(token);
             return !isTokenExpired(token);
         } catch (Exception e) {
             return false;
         }
     }
 
-    // Authorization header-dan tokeni çıxarmaq
     public String extractTokenFromHeader(String authHeader) {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);

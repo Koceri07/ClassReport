@@ -19,7 +19,8 @@ public class UserResponse {
 
     private Role role;
 
-    private String token;
+    private String accessToken;
+    private String refreshToke;
 
     private boolean isActive;
 

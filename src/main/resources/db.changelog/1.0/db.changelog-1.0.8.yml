@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-lesson-instances-table
+      author: Koceri07
+      changes:
+        - createTable:
+            tableName: lesson_instances
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: date
+                  type: date
+              - column:
+                  name: is_extra
+                  type: boolean
+                  defaultValue: false
+              - column:
+                  name: group_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_lessons_group
+                    references: groups(id)
+              - column:
+                  name: lesson_schedule_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_lessons_schedule
+                    references: lesson_schedules(id)

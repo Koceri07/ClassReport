@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-groups-table
+      author: Koceri07
+      changes:
+        - createTable:
+            tableName: groups
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: group_name
+                  type: varchar(255)
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValue: true
+              - column:
+                  name: teacher_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_groups_teacher
+                    references: teachers(user_id)
+              - column:
+                  name: lesson_schedule_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_groups_schedule
+                    references: lesson_schedules(id)

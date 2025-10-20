@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-attendances-table
+      author: Koceri07
+      changes:
+        - createTable:
+            tableName: attendances
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: date
+                  type: date
+              - column:
+                  name: is_absent
+                  type: boolean
+              - column:
+                  name: late_time
+                  type: varchar(255)
+              - column:
+                  name: note
+                  type: text
+              - column:
+                  name: is_temporary_transfer
+                  type: boolean
+              - column:
+                  name: group_id
+                  type: bigint
+              - column:
+                  name: student_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_attendances_student
+                    references: students(id)
+              - column:
+                  name: lesson_instance_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_attendances_lesson
+                    references: lesson_instances(id)

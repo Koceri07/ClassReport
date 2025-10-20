@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-transfers-table
+      author: Koceri07
+      changes:
+        - createTable:
+            tableName: transfers
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: student_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_transfers_student
+                    references: students(id)
+              - column:
+                  name: from_group_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_transfers_from_group
+                    references: groups(id)
+              - column:
+                  name: to_group_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_transfers_to_group
+                    references: groups(id)
+              - column:
+                  name: start_date
+                  type: date
+              - column:
+                  name: end_date
+                  type: date
+              - column:
+                  name: is_active
+                  type: boolean

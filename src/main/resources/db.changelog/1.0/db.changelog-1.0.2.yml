@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-teachers-table
+      author: Koceri07
+      changes:
+        - createTable:
+            tableName: teachers
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    foreignKeyName: fk_teachers_user
+                    references: users(id)
+
+  - changeSet:
+      id: create-teacher-students-relation
+      author: your_name
+      changes:
+        - createTable:
+            tableName: teacher_students
+            columns:
+              - column:
+                  name: teacher_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_ts_teacher
+                    references: teachers(user_id)
+              - column:
+                  name: student_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_ts_student
+                    references: students(id)
+
+        - addPrimaryKey:
+            tableName: teacher_students
+            columnNames: teacher_id, student_id

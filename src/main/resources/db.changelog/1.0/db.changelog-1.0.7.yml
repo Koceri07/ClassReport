@@ -1,0 +1,66 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-lesson-schedules-table
+      author: Koceri07
+      changes:
+        - createTable:
+            tableName: lesson_schedules
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: start_time
+                  type: time
+              - column:
+                  name: end_time
+                  type: time
+              - column:
+                  name: group_id
+                  type: bigint
+              - column:
+                  name: teacher_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_lessons_teacher
+                    references: teachers(user_id)
+
+  - changeSet:
+      id: create-lesson-days-table
+      author: your_name
+      changes:
+        - createTable:
+            tableName: lesson_days
+            columns:
+              - column:
+                  name: lesson_schedule_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_lesson_days_schedule
+                    references: lesson_schedules(id)
+              - column:
+                  name: days_of_week
+                  type: varchar(20)
+
+  - changeSet:
+      id: create-lesson-exceptions-table
+      author: your_name
+      changes:
+        - createTable:
+            tableName: lesson_exceptions
+            columns:
+              - column:
+                  name: lesson_schedule_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_lesson_exceptions_schedule
+                    references: lesson_schedules(id)
+              - column:
+                  name: exception_dates
+                  type: date

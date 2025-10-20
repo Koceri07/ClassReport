@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-reports-table
+      author: Koceri07
+      changes:
+        - createTable:
+            tableName: reports
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: student_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_reports_student
+                    references: students(id)
+              - column:
+                  name: teacher_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_reports_teacher
+                    references: teachers(user_id)
+              - column:
+                  name: report_date
+                  type: date
+              - column:
+                  name: content
+                  type: text
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValue: true

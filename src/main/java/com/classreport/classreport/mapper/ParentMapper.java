@@ -1,0 +1,75 @@
+package com.classreport.classreport.mapper;
+
+import com.classreport.classreport.entity.ParentEntity;
+import com.classreport.classreport.model.request.ParentRequest;
+import com.classreport.classreport.model.request.UserRequest;
+import com.classreport.classreport.model.response.ParentResponse;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ParentMapper {
+
+    public ParentEntity responseToEntity(ParentResponse parentResponse) {
+        if (parentResponse == null) {
+            return null;
+        }
+
+        ParentEntity parentEntity = new ParentEntity();
+        parentEntity.setId(parentResponse.getId());
+        parentEntity.setName(parentResponse.getName());
+        parentEntity.setSurname(parentResponse.getSurname());
+        parentEntity.setEmail(parentResponse.getEmail());
+
+        return parentEntity;
+    }
+
+    public ParentResponse entityToResponse(ParentEntity parentEntity) {
+        if (parentEntity == null) {
+            return null;
+        }
+
+        ParentResponse parentResponse = new ParentResponse();
+        parentResponse.setId(parentEntity.getId());
+        parentResponse.setName(parentEntity.getName());
+        parentResponse.setSurname(parentEntity.getSurname());
+        parentResponse.setEmail(parentEntity.getEmail());
+
+        return parentResponse;
+    }
+
+    public ParentEntity requestToEntity(ParentRequest request) {
+        if (request == null) {
+            return null;
+        }
+
+        ParentEntity parentEntity = new ParentEntity();
+        parentEntity.setId(request.getId());
+        parentEntity.setName(request.getName());
+        parentEntity.setSurname(request.getSurname());
+        parentEntity.setPassword(request.getPassword());
+        parentEntity.setRole(request.getRole());
+        parentEntity.setEmail(request.getEmail());
+        parentEntity.setActive(request.isActive());
+
+        return parentEntity;
+    }
+
+    public ParentResponse userRequestToParentResponse(UserRequest request){
+        if (request == null){
+            return null;
+        }
+
+        ParentResponse response = new ParentResponse();
+
+        response.setName(request.getName());
+        response.setSurname(request.getSurname());
+        response.setEmail(request.getEmail());
+        response.setId(request.getId());
+
+        return response;
+    }
+}
+

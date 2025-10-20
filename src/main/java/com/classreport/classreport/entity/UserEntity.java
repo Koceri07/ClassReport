@@ -43,6 +43,7 @@ public class UserEntity implements UserDetails {
     @Size(max = 32)
     private String email;
 
+
     @NotNull
     private boolean isActive;
 

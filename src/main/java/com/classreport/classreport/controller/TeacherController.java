@@ -5,6 +5,7 @@ import com.classreport.classreport.model.request.UserRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.TeacherService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,12 +20,12 @@ public class TeacherController {
     private final TeacherService teacherService;
 
     @PostMapping
-    public void create(@RequestBody TeacherRequest teacherRequest){
+    public void create(@Valid @RequestBody TeacherRequest teacherRequest){
         teacherService.createTeacher(teacherRequest);
     }
 
     @PostMapping("/create-by-user/id/{id}")
-    public ApiResponse createByUserRequest(@RequestBody UserRequest userRequest, @PathVariable Long id){
+    public ApiResponse createByUserRequest(@Valid @RequestBody UserRequest userRequest, @PathVariable Long id){
         return teacherService.createTeacherByUserRequest(userRequest, id);
     }
 

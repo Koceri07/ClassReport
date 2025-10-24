@@ -1,5 +1,7 @@
 package com.classreport.classreport.model.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,10 +17,8 @@ public class ReportRequest {
 
     private TeacherRequest teacher;
 
-//    private Long studentId;
-//
-//    private Long teacherId;
-
+    @NotBlank
+    @Size(max = 1024)
     private String content;
 
 }

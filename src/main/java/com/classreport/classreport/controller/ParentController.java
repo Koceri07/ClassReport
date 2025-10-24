@@ -4,6 +4,7 @@ import com.classreport.classreport.model.request.ParentRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.ParentService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class ParentController {
     private final ParentService parentService;
 
     @PostMapping("/create")
-    public ApiResponse create(@RequestBody ParentRequest request){
+    public ApiResponse create(@Valid @RequestBody ParentRequest request){
         return parentService.createParent(request);
     }
 

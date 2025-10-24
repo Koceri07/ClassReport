@@ -4,6 +4,7 @@ import com.classreport.classreport.model.request.ReportRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.ReportService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class ReportController {
 
 
     @PostMapping("/add")
-    public ApiResponse create(@RequestBody ReportRequest reportRequest){
+    public ApiResponse create(@Valid @RequestBody ReportRequest reportRequest){
         return reportService.createReport(reportRequest);
     }
 

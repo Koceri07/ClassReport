@@ -6,6 +6,7 @@ import com.classreport.classreport.service.MailService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class MailController {
     private final MailService mailService;
 
     @PostMapping
-    public void sendMail(@RequestBody MailRequest mailDto){
+    public void sendMail(@Valid @RequestBody MailRequest mailDto){
         mailService.sendMail(mailDto);
     }
 

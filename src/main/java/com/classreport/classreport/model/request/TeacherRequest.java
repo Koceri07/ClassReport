@@ -12,6 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 public class TeacherRequest extends UserRequest{
 
-    private List<StudentRequest> students;
 
 }

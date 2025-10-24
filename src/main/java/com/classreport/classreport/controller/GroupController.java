@@ -4,6 +4,7 @@ import com.classreport.classreport.model.request.GroupRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.GroupService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +19,7 @@ public class GroupController {
     private final GroupService groupService;
 
     @PostMapping("/create")
-    public ApiResponse create(@RequestBody GroupRequest groupRequest, @AuthenticationPrincipal UserDetails userDetails){
+    public ApiResponse create(@Valid @RequestBody GroupRequest groupRequest, @AuthenticationPrincipal UserDetails userDetails){
         groupService.createGroup(groupRequest, userDetails);
         ApiResponse apiResponse = new ApiResponse("groud Added");
         return apiResponse;

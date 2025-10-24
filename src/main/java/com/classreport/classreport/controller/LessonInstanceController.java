@@ -6,6 +6,7 @@ import com.classreport.classreport.model.request.LessonInstanceRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.LessonInstanceService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +20,12 @@ public class LessonInstanceController {
     private final LessonInstanceService lessonInstanceService;
 
     @PostMapping("/add")
-    private void create(@RequestBody LessonInstanceRequest request){
+    private void create(@Valid @RequestBody LessonInstanceRequest request){
         lessonInstanceService.createInstance(request);
     }
 
     @PostMapping("/extra/add")
-    public void addExtra(@RequestBody LessonAddRequest request){
+    public void addExtra(@Valid @RequestBody LessonAddRequest request){
         lessonInstanceService.addExtraLesson(request);
     }
 
@@ -65,7 +66,7 @@ public class LessonInstanceController {
 
 
     @PostMapping("/generate")
-    public void generateInstancesForWeek(@RequestBody DateRequest startDate){
+    public void generateInstancesForWeek(@Valid @RequestBody DateRequest startDate){
         lessonInstanceService.generateLessonInstancesForWeek(startDate);
     }
 

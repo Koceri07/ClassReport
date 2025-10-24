@@ -7,6 +7,7 @@ import com.classreport.classreport.model.response.AuthResponse;
 import com.classreport.classreport.service.AuthService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +21,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ApiResponse register(@RequestBody UserRequest request) {
+    public ApiResponse register(@Valid @RequestBody UserRequest request) {
         return authService.register(request);
     }
 
     @PostMapping("/login")
-    public ApiResponse login(@RequestBody UserRequest request) {
+    public ApiResponse login(@Valid @RequestBody UserRequest request) {
         return authService.login(request);
     }
 
@@ -54,7 +55,7 @@ public class AuthController {
     }
 
     @PostMapping("/get/refresh-token")
-    public AuthResponse getRefreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+    public AuthResponse getRefreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
         return authService.refreshToken(refreshTokenRequest);
     }
 

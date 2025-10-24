@@ -1,5 +1,6 @@
 package com.classreport.classreport.model.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class DateRequest {
 
+    @NotNull
     private LocalDate startDate;
+    @NotNull
     private LocalDate endDate;
 
     private Long groupId;

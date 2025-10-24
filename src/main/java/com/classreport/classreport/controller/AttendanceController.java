@@ -5,6 +5,7 @@ import com.classreport.classreport.model.request.AttendanceUpdateRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.AttendanceService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class AttendanceController {
     private final AttendanceService attendanceService;
 
     @PostMapping("/add")
-    public void create(@RequestBody AttendanceRequest request){
+    public void create(@Valid @RequestBody AttendanceRequest request){
         attendanceService.createAttendance(request);
     }
 
@@ -68,7 +69,7 @@ public class AttendanceController {
     }
 
     @PostMapping("/update")
-    public ApiResponse update(@RequestBody AttendanceUpdateRequest request) throws Throwable {
+    public ApiResponse update(@Valid @RequestBody AttendanceUpdateRequest request) throws Throwable {
         attendanceService.update(request);
         return new ApiResponse("updated");
     }

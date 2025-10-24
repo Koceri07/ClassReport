@@ -5,6 +5,7 @@ import com.classreport.classreport.entity.GroupEntity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 public class StudentRequest extends UserRequest{
 
+    @NotNull
     private Long groupId;
 
 }

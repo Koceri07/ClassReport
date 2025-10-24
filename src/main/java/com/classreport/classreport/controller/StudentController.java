@@ -4,6 +4,7 @@ import com.classreport.classreport.model.request.StudentRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.StudentService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class StudentController {
     private final StudentService studentService;
 
     @PostMapping(value = "/add", consumes = "application/json")
-    public ApiResponse create(@RequestBody StudentRequest studentRequest){
+    public ApiResponse create(@Valid @RequestBody StudentRequest studentRequest){
         studentService.createStudent(studentRequest);
         ApiResponse apiResponse = new ApiResponse("Student Add");
         return apiResponse;

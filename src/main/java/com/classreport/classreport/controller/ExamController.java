@@ -4,6 +4,7 @@ import com.classreport.classreport.model.request.ExamRequest;
 import com.classreport.classreport.model.response.ApiResponse;
 import com.classreport.classreport.service.ExamService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class ExamController {
     private final ExamService examService;
 
     @PostMapping("/create")
-    public ApiResponse create(@RequestBody ExamRequest request) {
+    public ApiResponse create(@Valid @RequestBody ExamRequest request) {
         return examService.createExam(request);
     }
 

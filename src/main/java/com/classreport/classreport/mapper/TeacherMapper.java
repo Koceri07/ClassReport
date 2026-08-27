@@ -28,22 +28,21 @@ public class TeacherMapper {
         TeacherEntity entity = new TeacherEntity();
         // UserEntity field-ləri
         entity.setId(request.getId());
-        entity.setName(request.getName());
-        entity.setSurname(request.getSurname());
+//        entity.setName(request.getName());
+//        entity.setSurname(request.getSurname());
         entity.setPassword(request.getPassword());
-        entity.setRole(request.getRole());
+//        entity.setRole(request.getRole());
         entity.setEmail(request.getEmail());
-        entity.setActive(request.isActive());
+//        entity.setActive(request.isActive());
 
         // TeacherEntity xüsusi field-ləri - StudentRequest-ləri StudentEntity-ə çevir
-        if (request.getStudents() != null) {
-            List<StudentEntity> studentEntities = request.getStudents().stream()
-                    .map(studentMapper::requestToEntity)
-                    .collect(Collectors.toList());
-            entity.setStudents(studentEntities);
-        } else {
-            entity.setStudents(null);
-        }
+//            List<StudentEntity> studentEntities = request.getStudents().stream()
+//                    .map(studentMapper::requestToEntity)
+//                    .collect(Collectors.toList());
+//            entity.setStudents(studentEntities);
+
+
+
 
         return entity;
     }
@@ -56,21 +55,18 @@ public class TeacherMapper {
         TeacherRequest request = new TeacherRequest();
         // UserRequest field-ləri
         request.setId(entity.getId());
-        request.setName(entity.getName());
-        request.setSurname(entity.getSurname());
+//        request.setName(entity.getName());
+//        request.setSurname(entity.getSurname());
         request.setPassword(entity.getPassword());
-        request.setRole(entity.getRole());
+//        request.setRole(entity.getRole());
         request.setEmail(entity.getEmail());
-        request.setActive(entity.isActive());
+//        request.setActive(entity.isActive());
 
         // TeacherRequest xüsusi field-ləri - StudentEntity-ləri StudentRequest-ə çevir
         if (entity.getStudents() != null) {
             List<StudentRequest> studentRequests = entity.getStudents().stream()
                     .map(studentMapper::entityToRequest)
                     .collect(Collectors.toList());
-            request.setStudents(studentRequests);
-        } else {
-            request.setStudents(null);
         }
 
         return request;
@@ -110,12 +106,12 @@ public class TeacherMapper {
 
         TeacherResponse response = new TeacherResponse();
 
-        response.setName(request.getName());
-        response.setSurname(request.getSurname());
-        response.setActive(request.isActive());
+//        response.setName(request.getName());
+//        response.setSurname(request.getSurname());
+//        response.setActive(request.isActive());
         response.setEmail(request.getEmail());
         response.setId(request.getId());
-        response.setRole(request.getRole());
+//        response.setRole(request.getRole());
 
         return response;
     }
@@ -127,12 +123,12 @@ public class TeacherMapper {
 
         TeacherResponse response = new TeacherResponse();
 
-        response.setName(request.getName());
-        response.setSurname(request.getSurname());
-        response.setActive(request.isActive());
+//        response.setName(request.getName());
+//        response.setSurname(request.getSurname());
+//        response.setActive(request.isActive());
         response.setEmail(request.getEmail());
         response.setId(request.getId());
-        response.setRole(request.getRole());
+//        response.setRole(request.getRole());
 
         return response;
     }

@@ -38,7 +38,9 @@ public class GroupService {
         GroupEntity groupEntity = GroupMapper.INSTANCE.requestToEntity(groupRequest);
         groupEntity.setActive(true);
 
-        Long teacherId = teacherService.getTeacherIdFromToken(userDetails);
+//        Long teacherId = teacherService.getTeacherIdFromToken(userDetails);
+        Long teacherId = groupRequest.getLessonSchedule().getTeacherId();
+//        var teacher = teacherRepository.findById(teacherId);
         TeacherEntity teacher = teacherRepository.findTeacherEntityById(teacherId);
 
         groupEntity.setTeacher(teacher);

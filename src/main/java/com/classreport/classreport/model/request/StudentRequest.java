@@ -18,7 +18,19 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentRequest extends UserRequest{
+public class StudentRequest{
+
+    private Long id;
+
+    private String name;
+
+    private String surname;
+
+    private String email;
+
+    private String phoneNumber;
+
+    private boolean isActive;
 
     @NotNull
     private Long groupId;

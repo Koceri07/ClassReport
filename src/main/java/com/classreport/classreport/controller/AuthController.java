@@ -1,5 +1,6 @@
 package com.classreport.classreport.controller;
 
+import com.classreport.classreport.model.request.LoginRequest;
 import com.classreport.classreport.model.request.RefreshTokenRequest;
 import com.classreport.classreport.model.request.UserRequest;
 import com.classreport.classreport.model.response.ApiResponse;
@@ -26,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ApiResponse login(@Valid @RequestBody UserRequest request) {
+    public ApiResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
     }
 

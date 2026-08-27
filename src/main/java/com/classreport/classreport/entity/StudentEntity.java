@@ -1,5 +1,6 @@
 package com.classreport.classreport.entity;
 
+import com.classreport.classreport.model.enums.Role;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,12 +13,36 @@ import java.util.List;
 @Table(name = "students")
 @Getter
 @Setter
-@SuperBuilder
-@EqualsAndHashCode(callSuper = true)
+//@SuperBuilder
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@PrimaryKeyJoinColumn(name = "id")
-public class StudentEntity extends UserEntity{
+//@PrimaryKeyJoinColumn(name = "id")
+public class StudentEntity{
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String name;
+
+    private String surname;
+
+    private String email;
+
+    private String phoneNumber;
+
+    private String parentInvadeCode;
+
+    private boolean isActive;
+
+    private boolean isTransfer;
+
+    private Role role = Role.STUDENT;
+
+
+    @ManyToMany
+    private List<ParentEntity> parents;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "attendance_id")
@@ -29,13 +54,5 @@ public class StudentEntity extends UserEntity{
             inverseJoinColumns = @JoinColumn(name = "group_id"))
     private List<GroupEntity> groups = new ArrayList<>();
 
-
-    private String parentInvadeCode;
-
-    @ManyToMany
-    private List<ParentEntity> parents;
-
-
-    private boolean isTransfer;
 
 }

@@ -1,19 +1,28 @@
 package com.classreport.classreport.model.response;
 
 import com.classreport.classreport.entity.GroupEntity;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-@SuperBuilder
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentResponse extends UserResponse {
+public class StudentResponse{
+
+    private Long id;
+
+    private String name;
+
+    private String surname;
+
+    private String email;
+
+    private String phoneNumber;
+
+    private boolean isActive;
+
     private Long groupId;
 }

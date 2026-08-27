@@ -32,10 +32,10 @@ public class ApplicationConfig {
                 return teacher;
             }
 
-            var student = studentRepository.findByEmail(username);
-            if (student != null) {
-                return student;
-            }
+//            var student = studentRepository.findByEmail(username);
+//            if (student != null) {
+//                return student;
+//            }
 
             var parent = parentRepository.findByEmail(username);
             if (parent != null) {

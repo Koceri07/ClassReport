@@ -15,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRequest {
+
     private Long id;
 
     @NotBlank
@@ -27,11 +28,12 @@ public class UserRequest {
     @Size(max = 32)
     private String password;
 
-    @NotNull
+//    @NotNull
     private boolean isActive;
 
     @NotNull
     private Role role;
+
     @NotNull
     private String email;
 

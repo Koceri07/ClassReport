@@ -72,7 +72,7 @@ public class StudentTransferService {
         return apiResponse;
     }
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 3600000)
     public void checkTransferDays(){
         List<TemporaryGroupTransferEntity> transfers = temporaryGroupTransferRepository.findAllByEndDate(LocalDate.now());
 

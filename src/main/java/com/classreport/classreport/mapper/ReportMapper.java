@@ -52,12 +52,12 @@ public class ReportMapper {
 
         TeacherEntity teacherEntity = new TeacherEntity();
         teacherEntity.setId(teacherRequest.getId());
-        teacherEntity.setName(teacherRequest.getName());
-        teacherEntity.setSurname(teacherRequest.getSurname());
+//        teacherEntity.setName(teacherRequest.getName());
+//        teacherEntity.setSurname(teacherRequest.getSurname());
         teacherEntity.setPassword(teacherRequest.getPassword());
-        teacherEntity.setRole(teacherRequest.getRole());
+//        teacherEntity.setRole(teacherRequest.getRole());
         teacherEntity.setEmail(teacherRequest.getEmail());
-        teacherEntity.setActive(teacherRequest.isActive());
+//        teacherEntity.setActive(teacherRequest.isActive());
 
         return teacherEntity;
     }

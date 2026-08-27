@@ -5,6 +5,7 @@ import com.classreport.classreport.entity.StudentEntity;
 import com.classreport.classreport.entity.TeacherEntity;
 import com.classreport.classreport.entity.UserEntity;
 import com.classreport.classreport.model.enums.Role;
+import com.classreport.classreport.model.request.LoginRequest;
 import com.classreport.classreport.model.request.RefreshTokenRequest;
 import com.classreport.classreport.model.request.UserRequest;
 import com.classreport.classreport.model.response.ApiResponse;
@@ -38,14 +39,14 @@ public class AuthService {
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
     private final ParentRepository parentRepository;
-    private UserRequest request;
+    private LoginRequest request;
 
     @Transactional
     public ApiResponse register(UserRequest request) {
         log.info("Action.register.start for id {}", request.getId());
         try {
             // Validation
-            if (request.getEmail() == null || request.getPassword() == null || request.getRole() == null) {
+            if (request.getEmail() == null || request.getPassword() == null) {
                 log.error("Action.register.end for id {}", request.getId());
                 return new ApiResponse("400");
             }
@@ -60,7 +61,7 @@ public class AuthService {
             boolean emailExists = false;
             switch (request.getRole()) {
                 case PARENT -> emailExists = parentRepository.existsByEmail(request.getEmail());
-                case STUDENT -> emailExists = studentRepository.existsByEmail(request.getEmail());
+//                case STUDENT -> emailExists = studentRepository.existsByEmail(request.getEmail());
                 case TEACHER -> emailExists = teacherRepository.existsByEmail(request.getEmail());
             }
 
@@ -88,17 +89,17 @@ public class AuthService {
                     user = parent;
                     break;
 
-                case STUDENT:
-                    StudentEntity student = new StudentEntity();
-                    student.setName(request.getName());
-                    student.setSurname(request.getSurname());
-                    student.setEmail(request.getEmail());
-                    student.setPassword(encodedPassword);
-                    student.setRole(Role.STUDENT);
-                    student.setActive(true);
-                    studentRepository.save(student);
-                    user = student;
-                    break;
+//                case STUDENT:
+//                    StudentEntity student = new StudentEntity();
+////                    student.setName(request.getName());
+////                    student.setSurname(request.getSurname());
+////                    student.setEmail(request.getEmail());
+////                    student.setPassword(encodedPassword);
+//                    student.setRole(Role.STUDENT);
+//                    student.setActive(true);
+//                    studentRepository.save(student);
+//                    user = student;
+//                    break;
 
                 case TEACHER:
                     TeacherEntity teacher = new TeacherEntity();
@@ -120,7 +121,6 @@ public class AuthService {
             // Token yarat
             String jwtToken = jwtService.generateToken(user);
 
-            // ✅ DÜZ DATA FORMATI
             Map<String, Object> responseData = new HashMap<>();
             responseData.put("token", jwtToken);
             responseData.put("id", user.getId());
@@ -132,7 +132,7 @@ public class AuthService {
 
             log.info("Action.register.end for email {}", request.getEmail());
 
-            // ✅ DÜZ API RESPONSE
+
             ApiResponse response = new ApiResponse();
             response.setCode("200");
             response.setMessage("Successfully registered");
@@ -150,7 +150,7 @@ public class AuthService {
         }
     }
 
-    public ApiResponse login(UserRequest request) {
+    public ApiResponse login(LoginRequest request) {
         this.request = request;
         log.info("Action.login.start for email {}", request.getEmail());
         try {
@@ -174,10 +174,8 @@ public class AuthService {
                 return new ApiResponse("401");
             }
 
-            // ✅ REAL JWT TOKEN YARAD
             String jwtToken = jwtService.generateToken(user);
 
-            // ✅ DÜZ DATA FORMATI
             Map<String, Object> responseData = new HashMap<>();
             responseData.put("token", jwtToken);
             responseData.put("id", user.getId());
@@ -189,11 +187,10 @@ public class AuthService {
 
             log.info("Action.login.success for email {}", request.getEmail());
 
-            // ✅ ApiResponse yarat
             ApiResponse response = new ApiResponse();
             response.setCode("200");
             response.setMessage("Successfully logged in");
-            response.setData(responseData); // ✅ Map set et
+            response.setData(responseData);
 
             return response;
 
@@ -210,8 +207,8 @@ public class AuthService {
         TeacherEntity teacher = teacherRepository.findByEmail(email);
         if (teacher != null) return teacher;
 
-        StudentEntity student = studentRepository.findByEmail(email);
-        if (student != null) return student;
+//        StudentEntity student = studentRepository.findByEmail(email);
+//        if (student != null) return student;
 
         ParentEntity parent = parentRepository.findByEmail(email);
         return parent;

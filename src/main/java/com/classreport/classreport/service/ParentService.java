@@ -42,8 +42,8 @@ public class ParentService {
         log.info("Action.createByUserRequest.start for id {}", userRequest.getId());
         var parent = new ParentEntity();
 
-        parent.setName(userRequest.getName());
-        parent.setSurname(userRequest.getSurname());
+//        parent.setName(userRequest.getName());
+//        parent.setSurname(userRequest.getSurname());
         parent.setId(userRequest.getId());
         parent.setEmail(userRequest.getEmail());
         parent.setActive(true);

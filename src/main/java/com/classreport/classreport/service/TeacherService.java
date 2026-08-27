@@ -35,8 +35,8 @@ public class TeacherService {
         teacherEntity.setId(userRequest.getId());
         teacherEntity.setActive(true);
         teacherEntity.setEmail(userRequest.getEmail());
-        teacherEntity.setName(userRequest.getName());
-        teacherEntity.setSurname(userRequest.getSurname());
+//        teacherEntity.setName(userRequest.getName());
+//        teacherEntity.setSurname(userRequest.getSurname());
         teacherEntity.setPassword(userRequest.getPassword());
         teacherEntity.setRole(Role.TEACHER);
 
@@ -85,12 +85,35 @@ public class TeacherService {
         log.info("Action.softDeleteById.end for id {}", id);
     }
 
+//    public Long getTeacherIdFromToken(UserDetails userDetails) {
+//        if (userDetails instanceof UserEntity) {
+//            return ((UserEntity) userDetails).getId();
+//        }
+//        return null;
+//    }
+
     public Long getTeacherIdFromToken(UserDetails userDetails) {
-        if (userDetails instanceof UserEntity) {
-            return ((UserEntity) userDetails).getId();
+        if (userDetails == null) {
+            return null;
         }
-        return null;
+
+        Long id = null;
+        if (userDetails instanceof UserEntity) {
+            id = ((UserEntity) userDetails).getId();
+        }
+
+        // ƏGƏR JWT FILTER ID-Nİ NULL SAXLAYIBSA VƏ YA FƏRQLİ OBYEKTDİRSƏ:
+        if (id == null) {
+            TeacherEntity teacher = teacherRepository.findByEmail(userDetails.getUsername());
+            id = teacher != null ? teacher.getId() : null;
+        }
+
+        return id;
     }
+
+
+
+
 
     public ApiResponse getTeacherIdFromTokenApi(UserDetails userDetails){
         log.info("Action.getTeacherIdFromTokenApi.strat");

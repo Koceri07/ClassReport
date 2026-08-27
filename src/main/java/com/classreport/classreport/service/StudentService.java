@@ -73,8 +73,8 @@ public class StudentService {
     public ApiResponse getAllStudents(){
         log.info("Action.getAllStudents.start");
         var students = studentRepository.findAll().stream()
-//                .filter(studentEntity -> studentEntity.getRole().equals(Role.STUDENT))
-                .filter(UserEntity::isActive)
+                .filter(studentEntity -> studentEntity.getRole().equals(Role.STUDENT))
+                .filter(StudentEntity::isActive)
                 .map(StudentMapper.INSTANCE::entityToResponse)
                 .toList();
         ApiResponse apiResponse = new ApiResponse(students);

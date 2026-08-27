@@ -20,7 +20,7 @@ public class AttendanceRequest {
     private LocalDate date;
     private Boolean isAbsent;
     private String lateTime;
-    @NotBlank
+//    @NotBlank
     @Size(max = 32)
     private String note;
 

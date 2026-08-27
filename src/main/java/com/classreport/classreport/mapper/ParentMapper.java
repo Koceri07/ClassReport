@@ -51,12 +51,12 @@ public class ParentMapper {
 
         ParentEntity parentEntity = new ParentEntity();
         parentEntity.setId(request.getId());
-        parentEntity.setName(request.getName());
-        parentEntity.setSurname(request.getSurname());
+//        parentEntity.setName(request.getName());
+//        parentEntity.setSurname(request.getSurname());
         parentEntity.setPassword(request.getPassword());
-        parentEntity.setRole(request.getRole());
+//        parentEntity.setRole(request.getRole());
         parentEntity.setEmail(request.getEmail());
-        parentEntity.setActive(request.isActive());
+//        parentEntity.setActive(request.isActive());
 
         return parentEntity;
     }
@@ -68,12 +68,12 @@ public class ParentMapper {
 
         ParentResponse response = new ParentResponse();
 
-        response.setName(request.getName());
-        response.setSurname(request.getSurname());
+//        response.setName(request.getName());
+//        response.setSurname(request.getSurname());
         response.setEmail(request.getEmail());
         response.setId(request.getId());
-        response.setActive(request.isActive());
-        response.setRole(request.getRole());
+//        response.setActive(request.isActive());
+//        response.setRole(request.getRole());
 
         return response;
     }

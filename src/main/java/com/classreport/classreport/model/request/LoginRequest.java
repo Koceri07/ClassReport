@@ -1,16 +1,16 @@
 package com.classreport.classreport.model.request;
 
-import com.classreport.classreport.entity.StudentEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
-//@AllArgsConstructor
+@AllArgsConstructor
 @NoArgsConstructor
-public class TeacherRequest extends UserRequest{
+public class LoginRequest {
 
+    private String email;
+
+    private String password;
 
 }

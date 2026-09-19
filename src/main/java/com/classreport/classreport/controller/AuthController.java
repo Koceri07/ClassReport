@@ -31,10 +31,15 @@ public class AuthController {
         return authService.login(request);
     }
 
+//    @PostMapping("/refresh-token")
+//    public ApiResponse refreshToken(HttpServletRequest request) {
+//        String authHeader = request.getHeader("Authorization");
+//        return authService.refreshToken(authHeader);
+//    }
+
     @PostMapping("/refresh-token")
-    public ApiResponse refreshToken(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        return authService.refreshToken(authHeader);
+    public ApiResponse refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+        return authService.refreshToken(request);
     }
 
     @GetMapping("/me")
@@ -57,7 +62,7 @@ public class AuthController {
 
     @PostMapping("/get/refresh-token")
     public AuthResponse getRefreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
-        return authService.refreshToken(refreshTokenRequest);
+        return authService.getRefreshToken(refreshTokenRequest);
     }
 
 }

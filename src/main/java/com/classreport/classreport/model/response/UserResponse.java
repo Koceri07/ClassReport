@@ -20,7 +20,7 @@ public class UserResponse {
     private Role role;
 
     private String accessToken;
-    private String refreshToke;
+    private String refreshToken;
 
     private boolean isActive;
 

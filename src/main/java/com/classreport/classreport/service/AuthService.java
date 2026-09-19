@@ -214,45 +214,72 @@ public class AuthService {
         return parent;
     }
 
-    public ApiResponse refreshToken(String authHeader) {
-        try {
-            // Validation
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                return new ApiResponse("400");
-            }
+//    public ApiResponse refreshToken(String authHeader) {
+//        try {
+//            // Validation
+//            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+//                return new ApiResponse("400");
+//            }
+//
+//            String token = authHeader.substring(7);
+//            String userEmail = jwtService.extractUsername(token);
+//
+//            if (userEmail != null) {
+//                Optional<UserEntity> userOptional = userRepository.findByEmail(userEmail);
+//                if (userOptional.isEmpty()) {
+//                    return new ApiResponse("404");
+//                }
+//
+//                UserEntity user = userOptional.get();
+//
+//                if (jwtService.isTokenValid(token, user)) {
+//                    String newToken = jwtService.generateToken(user);
+//
+//                    UserResponse userResponse = new UserResponse();
+//                    userResponse.setId(user.getId());
+//                    userResponse.setName(user.getName());
+//                    userResponse.setSurname(user.getSurname());
+//                    userResponse.setEmail(user.getEmail());
+//                    userResponse.setRole(user.getRole());
+//                    userResponse.setActive(user.isActive());
+//                    userResponse.setAccessToken(newToken);
+//
+//                    return new ApiResponse(userResponse);
+//                }
+//            }
+//
+//            return new ApiResponse("401");
+//
+//        } catch (Exception e) {
+//            return new ApiResponse("500");
+//        }
+//    }
 
-            String token = authHeader.substring(7);
-            String userEmail = jwtService.extractUsername(token);
+    public ApiResponse refreshToken(RefreshTokenRequest request) {
+        String refreshToken = request.getRefreshToken();
+        String userEmail = jwtService.extractUsername(refreshToken);
 
-            if (userEmail != null) {
-                Optional<UserEntity> userOptional = userRepository.findByEmail(userEmail);
-                if (userOptional.isEmpty()) {
-                    return new ApiResponse("404");
-                }
+        UserEntity user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("İstifadəçi tapılmadı"));
 
-                UserEntity user = userOptional.get();
-
-                if (jwtService.isTokenValid(token, user)) {
-                    String newToken = jwtService.generateToken(user);
-
-                    UserResponse userResponse = new UserResponse();
-                    userResponse.setId(user.getId());
-                    userResponse.setName(user.getName());
-                    userResponse.setSurname(user.getSurname());
-                    userResponse.setEmail(user.getEmail());
-                    userResponse.setRole(user.getRole());
-                    userResponse.setActive(user.isActive());
-                    userResponse.setAccessToken(newToken);
-
-                    return new ApiResponse(userResponse);
-                }
-            }
-
-            return new ApiResponse("401");
-
-        } catch (Exception e) {
-            return new ApiResponse("500");
+        if (!jwtService.isTokenValid(refreshToken, user)) {
+            throw new RuntimeException("Refresh token keçərsizdir və ya vaxtı bitib");
         }
+
+        String newAccessToken = jwtService.generateToken(user);
+
+        UserResponse userResponse = UserResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .isActive(user.isActive())
+                .accessToken(newAccessToken)
+                .refreshToken(refreshToken)
+                .build();
+
+        return new ApiResponse(userResponse);
     }
 
 
@@ -308,7 +335,7 @@ public class AuthService {
 
 
 
-    public AuthResponse refreshToken(RefreshTokenRequest request) {
+    public AuthResponse getRefreshToken(RefreshTokenRequest request) {
         try {
             String refreshToken = request.getRefreshToken();
 

@@ -43,37 +43,23 @@ public class AuthService {
 
     @Transactional
     public ApiResponse register(UserRequest request) {
-        log.info("Action.register.start for id {}", request.getId());
+        log.info("Action.register.start for email {}", request.getEmail());
         try {
-            // Validation
-            if (request.getEmail() == null || request.getPassword() == null) {
-                log.error("Action.register.end for id {}", request.getId());
+            if (request.getEmail() == null || request.getPassword() == null || request.getPassword().trim().isEmpty()) {
                 return new ApiResponse("400");
             }
 
-            // Şifrə validation
-            if (request.getPassword().trim().isEmpty()) {
-                log.error("Action.register.end for id {}", request.getId());
-                return new ApiResponse("400");
-            }
-
-            // Email yoxlaması
             boolean emailExists = false;
             switch (request.getRole()) {
                 case PARENT -> emailExists = parentRepository.existsByEmail(request.getEmail());
-//                case STUDENT -> emailExists = studentRepository.existsByEmail(request.getEmail());
                 case TEACHER -> emailExists = teacherRepository.existsByEmail(request.getEmail());
             }
 
             if (emailExists) {
-                log.error("Action.register.end for id {}", request.getId());
                 return new ApiResponse("400");
             }
 
-            // Şifrəni encode et
             String encodedPassword = passwordEncoder.encode(request.getPassword());
-
-            // User yarat - role görə müxtəlif entity (constructor ilə)
             UserEntity user = null;
 
             switch (request.getRole()) {
@@ -89,18 +75,6 @@ public class AuthService {
                     user = parent;
                     break;
 
-//                case STUDENT:
-//                    StudentEntity student = new StudentEntity();
-////                    student.setName(request.getName());
-////                    student.setSurname(request.getSurname());
-////                    student.setEmail(request.getEmail());
-////                    student.setPassword(encodedPassword);
-//                    student.setRole(Role.STUDENT);
-//                    student.setActive(true);
-//                    studentRepository.save(student);
-//                    user = student;
-//                    break;
-
                 case TEACHER:
                     TeacherEntity teacher = new TeacherEntity();
                     teacher.setName(request.getName());
@@ -114,15 +88,16 @@ public class AuthService {
                     break;
 
                 default:
-                    log.error("Action.register.end for id {}", request.getId());
                     return new ApiResponse("400");
             }
 
-            // Token yarat
-            String jwtToken = jwtService.generateToken(user);
+            // Həm Access Token, həm də Refresh Token yaradılır
+            String accessToken = jwtService.generateToken(user);
+            String refreshToken = jwtService.generateRefreshToken(user);
 
             Map<String, Object> responseData = new HashMap<>();
-            responseData.put("token", jwtToken);
+            responseData.put("accessToken", accessToken);
+            responseData.put("refreshToken", refreshToken);
             responseData.put("id", user.getId());
             responseData.put("name", user.getName());
             responseData.put("surname", user.getSurname());
@@ -132,7 +107,6 @@ public class AuthService {
 
             log.info("Action.register.end for email {}", request.getEmail());
 
-
             ApiResponse response = new ApiResponse();
             response.setCode("200");
             response.setMessage("Successfully registered");
@@ -141,8 +115,7 @@ public class AuthService {
             return response;
 
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error("Action.register.end for email {}", request.getEmail());
+            log.error("Action.register.error for email {}: {}", request.getEmail(), e.getMessage());
             ApiResponse response = new ApiResponse();
             response.setCode("500");
             response.setMessage("Registration error: " + e.getMessage());
@@ -151,7 +124,6 @@ public class AuthService {
     }
 
     public ApiResponse login(LoginRequest request) {
-        this.request = request;
         log.info("Action.login.start for email {}", request.getEmail());
         try {
             // Validation
@@ -160,7 +132,7 @@ public class AuthService {
                 return new ApiResponse("400");
             }
 
-            // Userı tap
+            // User-i tap
             UserEntity user = findUserByEmail(request.getEmail());
 
             if (user == null) {
@@ -174,10 +146,13 @@ public class AuthService {
                 return new ApiResponse("401");
             }
 
-            String jwtToken = jwtService.generateToken(user);
+            // Həm Access Token, həm də Refresh Token yaradılır
+            String accessToken = jwtService.generateToken(user);
+            String refreshToken = jwtService.generateRefreshToken(user);
 
             Map<String, Object> responseData = new HashMap<>();
-            responseData.put("token", jwtToken);
+            responseData.put("accessToken", accessToken);
+            responseData.put("refreshToken", refreshToken);
             responseData.put("id", user.getId());
             responseData.put("name", user.getName());
             responseData.put("surname", user.getSurname());
